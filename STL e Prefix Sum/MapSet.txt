@@ -1,0 +1,56 @@
+-------------------------------------------------------------------------------
+1. SET (Conjunto de elementos únicos e mantidos ordenados)
+-------------------------------------------------------------------------------
+set<int> s;             // Criação: O(1)
+s.insert(5);            // Inserção: O(log N)
+s.count(5);             // Retorna 1 se o elemento existe, 0 se não: O(log N)
+s.find(5);              // Retorna iterador (funciona como ponteiro) para o elemento: O(log N)
+s.erase(5);             // Remove o elemento: O(log N)
+
+// Métodos membros de busca em intervalo:
+s.lower_bound(x);       // Retorna iterador para o 1º elemento >= x: O(log N)
+s.upper_bound(x);       // Retorna iterador para o 1º elemento > x: O(log N)
+
+
+-------------------------------------------------------------------------------
+2. MULTISET (Permite elementos duplicados e mantidos ordenados)
+-------------------------------------------------------------------------------
+multiset<int> ms;       // Criação: O(1)
+ms.insert(5);           // Inserção: O(log N)
+ms.insert(5);           // Inserção de duplicata
+ms.count(5);            // Conta ocorrências: O(log N + K), onde K é a qtd de elementos
+ms.find(5);             // Retorna iterador para a PRIMEIRA ocorrência do 5: O(log N)
+
+// ATENÇÃO NA REMOÇÃO EM MULTISET:
+ms.erase(5);            // CUIDADO: Remove TODAS as ocorrências do valor 5!
+ms.erase(ms.find(5));   // Remove APENAS UMA ocorrência do elemento: O(log N)
+
+
+-------------------------------------------------------------------------------
+3. MAP (Pares Chave-Valor únicos, mantidos ordenados pela chave)
+-------------------------------------------------------------------------------
+map<int, int> m;        // Criação: O(1)
+m[5] = 10;              // Inserção/Acesso por chave via colchetes: O(log N)
+m.count(5);             // Retorna 1 se a chave existe, 0 se não: O(log N)
+m.find(5);              // Retorna iterador para pair<const Key, Value>: O(log N)
+                        // Acesso via iterador 'it': it->first (chave), it->second (valor)
+m.erase(5);             // Remove a chave e seu valor associado: O(log N)
+
+// Métodos membros de busca em intervalo:
+m.lower_bound(x);       // Iterador para o 1º pair com chave >= x: O(log N)
+m.upper_bound(x);       // Iterador para o 1º pair com chave > x: O(log N)
+
+
+-------------------------------------------------------------------------------
+4. MULTIMAP (Permite chaves duplicadas, ordenadas pela chave)
+-------------------------------------------------------------------------------
+multimap<int, int> mm;  // Criação: O(1)
+mm.insert({5, 10});     // Inserção (não possui operador []): O(log N)
+mm.insert({5, 20});     // Inserção de chave duplicada
+mm.count(5);            // Conta quantas vezes a chave existe: O(log N + K)
+mm.find(5);             // Iterador para a PRIMEIRA entrada com essa chave: O(log N)
+
+// ATENÇÃO NA REMOÇÃO EM MULTIMAP:
+mm.erase(5);            // CUIDADO: Remove TODAS as entradas com a chave 5!
+mm.erase(mm.find(5));   // Remove APENAS A PRIMEIRA entrada com a chave 5: O(log N)
+===============================================================================

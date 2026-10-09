@@ -1,0 +1,8 @@
+// String para Inteiro
+    int i = stoi(string j)
+// Inteiro/Long Long para String
+    string i = to_string(int/ll j)
+// String para Long Long
+    ll i = stoll(string j)
+// String de tamanho fixo
+    string i (tamanho," ");
