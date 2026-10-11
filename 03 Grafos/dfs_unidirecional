@@ -1,0 +1,63 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define FORi(n) for(int i=0;i<n;i++)
+#define FORj(n) for(int j=0;j<n;j++)
+int adj [10][10];
+int vis[10][10];
+int n, m;
+int dr[4]={0,0,1,-1};
+int dc[4]={1,-1,0,0};
+int total=0;
+int loop=-1;
+bool possivel(int l,int c){
+    if(l<n && l>=0 && c<m && c>=0 && vis[l][c]==0) return true;
+    if(vis[l][c]!=0){
+        loop=vis[l][c];
+    }
+    return false;
+}
+void dfs(int l,int c){
+    total++;
+    int k=adj[l][c];
+    if(possivel(l+dr[k],c+dc[k])){
+        vis[l+dr[k]][c+dc[k]]=vis[l][c]+1;
+        dfs(l+dr[k],c+dc[k]);
+    }
+    return;
+}
+void solve()
+{
+    while(true){
+    int c,f,posi; cin >> c >> f >> posi;
+    if(c==0 && f==0 && posi==0) break;
+    FORi(c){
+        string linha;cin >> linha;
+        FORj(f){
+            if(linha[i]=='N'){
+                adj[i][j]=3;
+            }else if(linha[i]=='S'){
+                adj[i][j]=2;
+            }else if(linha[i]=='W'){
+                adj[i][j]=1;
+            }else{
+                adj[i][j]=0;
+            }
+        }
+    }
+    vis[0][posi-1]=1;
+    dfs(0,posi-1);
+    if(loop!=-1){
+        cout << loop << "step(s) before a loop of " << total-loop <<  " step(s)" << "\n";
+    }
+    else{
+        cout << total <<  " step(s) to exit" << "\n";
+    }}
+}
+int main(){
+    ios::sync_with_stdio(false);cin.tie(0);
+
+    // cout << fixed << setprecision(9);
+
+    int t=1; //cin>>t; 
+    FORi(t) { solve(); }
+}
