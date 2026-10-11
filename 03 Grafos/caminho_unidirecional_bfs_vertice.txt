@@ -1,0 +1,71 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define FORi(n) for(int i=0;i<n;i++)
+int dr[4]={0,0,1,-1};
+int dc[4]={1,-1,0,0};
+int n, m;
+bool valido(int r, int c){
+    return(c>=0 && c<m && r>=0 && r<n);
+}
+void solve()
+{
+   cin >> n >> m;
+   vector<string> mapa (n);
+   FORi(n)cin >> mapa[i];
+   int r1,c1;cin >> r1 >> c1;
+   int r2,c2;cin >> r2 >> c2;
+   r1--;c1--;c2--;r2--;
+   int vizinhos_validos=0;
+   FORi(4){
+    int li=r2+dr[i];
+    int co=c2+dc[i];
+    if(valido(li,co)){
+        if(mapa[li][co]=='.' || li==r1 || co==c2){
+            vizinhos_validos++;
+        }
+        }
+    }
+    queue <pair<int,int>> fila;
+    bool conseguiu=false;
+    fila.push({r1,c1});
+    while(!fila.empty()){
+        auto[r3,c3]=fila.front();
+        fila.pop();
+        FORi(4){
+            int li=r3+dr[i];
+            int co=c3+dc[i];
+            if(valido(li,co)){
+                if(li==r2 && co==c2){
+                    conseguiu=true;
+                    break;
+                }
+                if(mapa[li][co]=='.'){
+                    mapa[li][co]=='x';
+                    fila.push({li,co});
+                }
+            }
+        }
+        if(conseguiu)break;
+    }
+    if(!conseguiu) cout << "NO" << "\n";
+    else{
+        if(mapa[r2][c2]=='x'){
+            cout << "YES" << "\n";
+        }else{
+            if(vizinhos_validos>=2){
+                cout << "YES" << "\n";
+            }else {
+                cout << "NO" << "\n";
+            }
+        }
+    }    
+}
+int main()
+{
+    ios::sync_with_stdio(false);cin.tie(0);
+
+    // cout << fixed << setprecision(9);
+
+    int t=1; //cin>>t; 
+    FORi(t) { solve(); }
+}

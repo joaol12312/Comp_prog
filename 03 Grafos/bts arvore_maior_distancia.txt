@@ -35,14 +35,14 @@ void solve()
         adj[n].push_back(m);
         adj[m].push_back(n);
     }
-    /*auto [valorA, dist0] = bfs(1,c);
+    auto [valorA, dist0] = bfs(1,c);
     auto [valorb, distA] = bfs(valorA,c);
     auto [valor0, distB] = bfs(valorb,c);
 
     for(int i = 1; i<=c; i++){
         cout << min(distA[i],distB[i]) << " ";
     }
-    cout << "\n";*/
+    cout << "\n";
 
 }
 int main(){

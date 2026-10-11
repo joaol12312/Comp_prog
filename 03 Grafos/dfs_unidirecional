@@ -4,15 +4,15 @@ using namespace std;
 #define FORj(n) for(int j=0;j<n;j++)
 int adj [10][10];
 int vis[10][10];
-int n, m;
+int p, f;
 int dr[4]={0,0,1,-1};
 int dc[4]={1,-1,0,0};
 int total=0;
 int loop=-1;
 bool possivel(int l,int c){
-    if(l<n && l>=0 && c<m && c>=0 && vis[l][c]==0) return true;
-    if(vis[l][c]!=0){
-        loop=vis[l][c];
+    if(l<p && l>=0 && c<f && c>=0 && vis[l][c]==0) return true;
+    if(l<p && l>=0 && c<f && c>=0 && vis[l][c]!=0){
+        loop=vis[l][c]-1;
     }
     return false;
 }
@@ -28,26 +28,32 @@ void dfs(int l,int c){
 void solve()
 {
     while(true){
-    int c,f,posi; cin >> c >> f >> posi;
-    if(c==0 && f==0 && posi==0) break;
-    FORi(c){
+    total=0;
+    loop=-1;
+    int posi; cin >> p >> f >> posi;
+    if(p==0 && f==0 && posi==0) break;
+    FORi(p){
         string linha;cin >> linha;
         FORj(f){
-            if(linha[i]=='N'){
+            if(linha[j]=='N'){
                 adj[i][j]=3;
-            }else if(linha[i]=='S'){
+                vis[i][j]=0;
+            }else if(linha[j]=='S'){
                 adj[i][j]=2;
-            }else if(linha[i]=='W'){
+                vis[i][j]=0;
+            }else if(linha[j]=='W'){
                 adj[i][j]=1;
+                vis[i][j]=0;
             }else{
                 adj[i][j]=0;
+                vis[i][j]=0;
             }
         }
     }
     vis[0][posi-1]=1;
     dfs(0,posi-1);
     if(loop!=-1){
-        cout << loop << "step(s) before a loop of " << total-loop <<  " step(s)" << "\n";
+        cout << loop << " step(s) before a loop of " << total-loop <<  " step(s)" << "\n";
     }
     else{
         cout << total <<  " step(s) to exit" << "\n";
