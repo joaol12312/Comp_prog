@@ -1,0 +1,71 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define FORi(n) for(int i=0;i<n;i++)
+int mapa[20][20];
+int dl[4]={0,0,1,-1};
+int dc[4]={1,-1,0,0};
+bool valida(int b, int d){
+    return(b>=1 && b<=19 && d<=19 && d>=1);
+}
+pair<int ,vector<pair<int,int>>> jogo(int l,int c, int cor){
+    vector<pair<int,int>> pedras;
+    set<pair<int,int>> liberdade;
+    bool ja_visitou[20][20]={false};
+    queue <pair<int,int>> fila;
+    fila.push({l,c});
+    ja_visitou[l][c]=true;
+    while(!fila.empty()){
+        auto[l1,c1]=fila.front();
+        fila.pop();
+        pedras.push_back({l1,c1});
+        FORi(4){
+            if(valida(l1+dl[i],c1+dc[i])){
+                if(mapa[l1+dl[i]][c1+dc[i]]==0){
+                    liberdade.insert({l1+dl[i],c1+dc[i]});
+                }else if(mapa[l1+dl[i]][c1+dc[i]]==cor && !ja_visitou[l1+dl[i]][c1+dc[i]]){
+                    ja_visitou[l1+dl[i]][c1+dc[i]]=true;
+                    fila.push({l1+dl[i],c1+dc[i]});
+                }
+            }
+        }
+    }
+    return {(int)liberdade.size(), pedras};
+}
+void solve()
+{
+    int c; cin >> c;
+    FORi(c){
+        int l,c;cin >> l >> c;
+        int atual=-1;
+        int oposta=1;
+        if(i%2==0){
+            atual=1;
+            oposta=-1;
+        }
+        mapa[l][c]=atual;
+        int brancas=0,pretas=0;
+        FORi(4){
+            int l2=l+dl[i],c2=c+dc[i];
+            if(valida(l2,c2) && mapa[l2][c2]==oposta){
+                auto[lib,pedras]=jogo(l2,c2,oposta);
+                if(lib==0){
+                    for(auto [l1,c1] : pedras){
+                        mapa[l1][c1]=0;
+                        if(oposta==1)pretas++;
+                        else brancas++;
+                    }
+                }
+            }
+        }
+        cout << pretas << " " << brancas << "\n";
+
+    }
+}
+int main(){
+    ios::sync_with_stdio(false);cin.tie(0);
+
+    // cout << fixed << setprecision(9);
+
+    int t=1; //cin>>t; 
+    FORi(t) { solve(); }
+}
