@@ -9,7 +9,7 @@ bool valida(int b, int d){
 }
 pair<int ,vector<pair<int,int>>> jogo(int l,int c, int cor){
     vector<pair<int,int>> pedras;
-    set<pair<int,int>> liberdade;
+    int liberdade=0;
     bool ja_visitou[20][20]={false};
     queue <pair<int,int>> fila;
     fila.push({l,c});
@@ -21,15 +21,17 @@ pair<int ,vector<pair<int,int>>> jogo(int l,int c, int cor){
         FORi(4){
             if(valida(l1+dl[i],c1+dc[i])){
                 if(mapa[l1+dl[i]][c1+dc[i]]==0){
-                    liberdade.insert({l1+dl[i],c1+dc[i]});
+                    liberdade=1;
+                    break;
                 }else if(mapa[l1+dl[i]][c1+dc[i]]==cor && !ja_visitou[l1+dl[i]][c1+dc[i]]){
                     ja_visitou[l1+dl[i]][c1+dc[i]]=true;
                     fila.push({l1+dl[i],c1+dc[i]});
                 }
             }
         }
+        if(liberdade)break;
     }
-    return {(int)liberdade.size(), pedras};
+    return {liberdade, pedras};
 }
 void solve()
 {
@@ -55,6 +57,14 @@ void solve()
                         else brancas++;
                     }
                 }
+            }
+        }
+        auto[lib,pedras]=jogo(l,c,atual);
+            if(lib==0){
+                for(auto [l1,c1] : pedras){
+                    mapa[l1][c1]=0;
+                    if(atual==1)pretas++;
+                    else brancas++;
             }
         }
         cout << pretas << " " << brancas << "\n";

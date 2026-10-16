@@ -1,0 +1,63 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define FORi(n) for(int i=0;i<n;i++)
+const int MAX=1e5+7;
+vector <int> adj[MAX];
+int grau[MAX];
+void solve(){
+    int n,m;
+    FORi(m)
+    {
+        int c,b;cin >> c >> b;
+        adj[c].push_back(b);
+        grau[b]++;
+    }
+    queue <int> fila;
+    FORi(n)
+    {
+        if(grau[i+1]==0)
+        {
+            fila.push(i+1);
+        }
+    }
+    vector<int> ordem;
+    bool nao_consegue=false;
+    while(!fila.empty()){
+        int atual=fila.front();
+        fila.pop();
+        if(fila.size()>0){
+            nao_consegue=true;
+            break;
+        }
+        ordem.push_back(atual);
+        for(auto u : adj[atual]){
+            grau[u]--;
+            if(grau[u]==0){
+                fila.push(u);
+            }
+        }
+    }
+    if(nao_consegue || (int)ordem.size()!=n)
+    {
+        cout << "No" << "\n";
+    }else{
+        int solucao [n];
+        for(int i = 0; i < n; i++){
+            solucao[ordem[i]-1]=i+1;
+        }
+        cout << "Yes" << "\n";
+        FORi(n){
+            cout << solucao[i] << " ";
+        }
+        cout << "\n";
+    }
+}
+int main()
+{
+    ios::sync_with_stdio(false);cin.tie(0);
+
+    // cout << fixed << setprecision(9);
+
+    int t=1; //cin>>t; 
+    FORi(t) { solve(); }
+}

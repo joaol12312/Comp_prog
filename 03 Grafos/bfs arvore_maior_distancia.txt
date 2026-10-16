@@ -40,7 +40,7 @@ void solve()
     auto [valor0, distB] = bfs(valorb,c);
 
     for(int i = 1; i<=c; i++){
-        cout << min(distA[i],distB[i]) << " ";
+        cout << max(distA[i],distB[i]) << " ";
     }
     cout << "\n";
 
