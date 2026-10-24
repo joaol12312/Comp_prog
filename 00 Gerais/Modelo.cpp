@@ -6,6 +6,7 @@ using ll = long long;
 #define FORj(n) for(int j=0;j<n;j++)
 #define all(a) (a).begin(),(a).end()
 #define printn(v,n) for(int i=0;i<n;i++) cout << v[i] << (i == n-1 ? "\n" : " ")
+#define pb push_back
 void solve()
 {
     //resolucao
