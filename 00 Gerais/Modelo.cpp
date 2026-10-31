@@ -7,6 +7,8 @@ using ll = long long;
 #define all(a) (a).begin(),(a).end()
 #define printn(v,n) for(int i=0;i<n;i++) cout << v[i] << (i == n-1 ? "\n" : " ")
 #define pb push_back
+const int INF = 1e9+7;
+const ll INF = 1e18+7;
 void solve()
 {
     //resolucao
