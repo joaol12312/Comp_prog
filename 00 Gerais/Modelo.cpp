@@ -3,6 +3,7 @@ using namespace std;
 using ll = long long;
 #define pii pair<int,int>
 #define FOR(i,n,m) for(int i=n;i<m;i++)
+#define FORr(i,n,m) for(int i=n;i>=m;i--)
 #define all(a) (a).begin(),(a).end()
 #define printn(v,n) for(int i=0;i<n;i++) cout << v[i] << (i == n-1 ? "\n" : " ")
 #define pb push_back
