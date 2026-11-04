@@ -1,0 +1,45 @@
+-------------------------------------------------------------------------------
+17. MODELO: DETEÇÃO E RECONSTRUÇÃO DE CICLO (Grafos Não Direcionados)
+-------------------------------------------------------------------------------
+// Utiliza uma Busca em Profundidade (DFS) para detetar a presença de um ciclo 
+// num grafo não direcionado e reconstrói os vértices exatos que o compõem.
+// Ignora a aresta de volta imediata para o pai ('p').
+// Complexidade de Tempo: O(V + E) | Espaço: O(V) (Pilha de Recursão e Vetor)
+
+const int MAXN = 2e5 + 5;
+vector<int> adj[MAXN]; // Lista de adjacência do grafo
+bool vis[MAXN];        // Marca se o vértice já foi visitado
+vector<int> cycle;     // Armazena os vértices que formam o ciclo encontrado
+
+// Códigos de retorno da DFS:
+// -1: nenhum ciclo encontrado a partir deste ramo
+// -2: ciclo encontrado e já completamente reconstruído
+// >= 0: identificador do vértice onde o ciclo começou (ponto de fecho)
+
+int dfs(int u, int p) {
+    // Se o vértice já foi visitado, encontrámos um fecho de ciclo (back-edge)
+    if (vis[u]) return u; 
+    
+    vis[u] = true;
+
+    for (int v : adj[u]) {
+        // Num grafo não direcionado, ignoramos a aresta que volta para o pai imediato
+        if (v != p) {
+            int ret = dfs(v, u);
+
+            if (ret == -2) return -2; // O ciclo já foi processado e fechado
+            
+            // Se encontrou um ciclo (retorna o nó raiz do ciclo)
+            if (ret != -1) {
+                cycle.push_back(u); // Adiciona o nó atual ao caminho do ciclo
+                
+                // Se chegámos de volta à raiz do ciclo, a reconstrução termina
+                if (u == ret) return -2; 
+                else return ret; // Continua a propagar a raiz para cima
+            }
+        }
+    }
+
+    return -1; // Nenhum ciclo encontrado a partir de 'u'
+}
+===============================================================================

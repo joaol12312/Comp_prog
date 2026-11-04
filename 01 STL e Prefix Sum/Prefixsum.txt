@@ -1,0 +1,54 @@
+-------------------------------------------------------------------------------
+1. MODELO: SOMA DE PREFIXOS 1D (1D Prefix Sum)
+-------------------------------------------------------------------------------
+// Constrói o vetor de somas acumuladas (1-indexed) e responde consultas em O(1).
+// Complexidade de Tempo: Construção O(N), Consulta O(1) | Espaço: O(N)
+
+// Constrói o vetor de prefixos a partir de um vetor 0-indexed 'v'
+vector<long long> build_prefix_1d(const vector<long long>& v) {
+    int n = v.size();
+    vector<long long> pref(n + 1, 0);
+    for (int i = 1; i <= n; i++) {
+        pref[i] = pref[i - 1] + v[i - 1];
+    }
+    return pref;
+}
+
+// Retorna a soma no intervalo fechado [l, r] (1-indexed)
+long long query_prefix_1d(const vector<long long>& pref, int l, int r) {
+    return pref[r] - pref[l - 1];
+}
+===============================================================================
+
+-------------------------------------------------------------------------------
+2. MODELO: SOMA DE PREFIXOS 2D (2D Prefix Sum / Submatrix Queries)
+-------------------------------------------------------------------------------
+// Pré-processa uma matriz N x M para responder à soma de qualquer submatriz
+// delimitada do ponto (r1, c1) até (r2, c2) em tempo O(1) (1-indexed).
+// Complexidade de Tempo: Construção O(N * M), Consulta O(1) | Espaço: O(N * M)
+
+// Constrói a matriz de prefixos 2D
+vector<vector<long long>> build_prefix_2d(const vector<vector<long long>>& mat) {
+    int n = mat.size();
+    int m = mat[0].size();
+    vector<vector<long long>> pref(n + 1, vector<long long>(m + 1, 0));
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= m; j++) {
+            pref[i][j] = mat[i - 1][j - 1]
+                       + pref[i - 1][j]
+                       + pref[i][j - 1]
+                       - pref[i - 1][j - 1];
+        }
+    }
+    return pref;
+}
+
+// Retorna a soma da submatriz de (r1, c1) até (r2, c2) (1-indexed)
+long long query_prefix_2d(const vector<vector<long long>>& pref, int r1, int c1, int r2, int c2) {
+    return pref[r2][c2]
+         - pref[r1 - 1][c2]
+         - pref[r2][c1 - 1]
+         + pref[r1 - 1][c1 - 1];
+}
+===============================================================================

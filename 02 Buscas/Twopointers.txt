@@ -1,0 +1,69 @@
+-------------------------------------------------------------------------------
+7. MODELO: TWO POINTERS (Dois Ponteiros em Extremos Opostos)
+-------------------------------------------------------------------------------
+// Técnica clássica onde dois ponteiros caminham em direções opostas (um do
+// início e outro do fim). Extremamente útil em vetores ORDENADOS para
+// encontrar pares, trios (3SUM), ou testar palíndromos.
+// Exemplo: Verificar se existe um par (arr[l] + arr[r]) igual a 'target'.
+// Complexidade de Tempo: O(N) | Espaço: O(1)
+
+bool two_pointers_pair_sum(const vector<long long>& sorted_arr, long long target) {
+    int l = 0;
+    int r = sorted_arr.size() - 1;
+
+    while (l < r) {
+        long long soma_atual = sorted_arr[l] + sorted_arr[r];
+        
+        if (soma_atual == target) {
+            return true; // Par encontrado!
+        } 
+        else if (soma_atual < target) {
+            l++; // A soma está pequena, avança o 'l' para pegar um valor maior
+        } 
+        else {
+            r--; // A soma está grande, recua o 'r' para pegar um valor menor
+        }
+    }
+
+    return false; // Nenhum par formou o target
+}
+===============================================================================
+
+-------------------------------------------------------------------------------
+8. MODELO: SLIDING WINDOW (Janela Deslizante Genérica / Tamanho Variável)
+-------------------------------------------------------------------------------
+// Técnica onde dois ponteiros caminham na MESMA direção, formando um
+// subvetor contínuo [L...R]. O ponteiro 'R' expande a janela adicionando
+// elementos, e o ponteiro 'L' encolhe a janela para consertar restrições.
+// Útil para achar "a maior/menor sequência contínua que satisfaz X".
+// Complexidade de Tempo: O(N) | Espaço: O(1) (ou O(K) se usar map/freq)
+
+int sliding_window_generic(const vector<long long>& arr) {
+    int n = arr.size();
+    int l = 0;
+    int melhor_resposta = 0; // Pode ser min_len (iniciando em INF), max_len, etc.
+    
+    // Variáveis de estado da janela (ex: soma_atual, freq_letras, distinct_count)
+    long long estado = 0;
+
+    for (int r = 0; r < n; r++) {
+        // 1. EXPANDIR: Adiciona arr[r] ao estado atual da janela
+        // estado += arr[r];
+        
+        // 2. ENCOLHER: Enquanto a janela estiver INVÁLIDA, removemos o elemento 'l'
+        // Exemplo de condição inválida: estado > MAX_PERMITIDO ou repetição de letras
+        bool condicao_invalida = false; // Substituir pela lógica do problema
+        while (condicao_invalida && l <= r) {
+            // Remove arr[l] do estado atual
+            // estado -= arr[l];
+            l++; // Avança a borda esquerda
+        }
+        
+        // 3. ATUALIZAR: Neste ponto a janela [l...r] é 100% VÁLIDA.
+        // Atualiza a resposta (ex: pegando o maior tamanho alcançado).
+        melhor_resposta = max(melhor_resposta, r - l + 1); 
+    }
+
+    return melhor_resposta;
+}
+===============================================================================

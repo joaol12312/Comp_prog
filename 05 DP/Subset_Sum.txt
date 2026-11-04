@@ -1,0 +1,28 @@
+-------------------------------------------------------------------------------
+33. MODELO: SUBSET SUM (Soma dos Subconjuntos via DP)
+-------------------------------------------------------------------------------
+// Determina se existe algum subconjunto de elementos cuja soma seja exatamente 'sum'.
+// Implementado via Programação Dinâmica Recursiva (Top-Down com Memoização),
+// testando para cada elemento as decisões de inclusão (pega) e exclusão (não_pega).
+// Complexidade de Tempo: O(N * S) | Espaço: O(N * S) (Tabela de DP)
+
+const int MAXN = 1e3 + 5;
+const int MAXS = 1e4 + 5;
+int dp[MAXN][MAXS];
+vector<int> v;
+
+// NOTA: Inicialize a matriz 'dp' com -1 antes da primeira chamada:
+// memset(dp, -1, sizeof(dp));
+// Chamada inicial: solve(0, soma_objetivo)
+
+int solve(int i, int sum) {
+    if (sum == 0) return 1;
+    if (sum < 0 || i == (int)v.size()) return 0;
+    if (dp[i][sum] != -1) return dp[i][sum];
+
+    bool nao_pega = solve(i + 1, sum);
+    bool pega = solve(i + 1, sum - v[i]);
+
+    return dp[i][sum] = (pega || nao_pega);
+}
+===============================================================================

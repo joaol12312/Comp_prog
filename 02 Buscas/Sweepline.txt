@@ -1,0 +1,49 @@
+-------------------------------------------------------------------------------
+9. MODELO: SWEEP LINE GENÉRICO (Usando vector de pair)
+-------------------------------------------------------------------------------
+// Usa um único vector de pairs para manter a coordenada e o evento unidos.
+// ev.first = coordenada, ev.second = tipo de evento (+1 para entrada, -1 para saída).
+// Complexidade de Tempo: O(N log N) para ordenar | Espaço: O(N)
+
+long long sweep_line_generic(const vector<pair<long long, long long>>& intervalos) {
+    vector<pair<long long, int>> eventos;
+
+    // 1. GERAÇÃO DOS EVENTOS
+    for (auto [inicio, fim] : intervalos) {
+        eventos.push_back({inicio, 1});
+        
+        // Se intervalos que apenas se tocam (ex: [1,2] e [2,3]) não devem
+        // contar como sobreposição simultânea, o evento de saída deve ser -1.
+        eventos.push_back({fim, -1});
+    }
+
+    // 2. ORDENAÇÃO DA LINHA
+    // O sort de pairs do C++ ordena automaticamente pelo .first (coordenada).
+    // Em caso de empate na coordenada, ele usa o .second. 
+    // Como -1 < 1, as saídas (-1) serão processadas ANTES das entradas (1).
+    sort(eventos.begin(), eventos.end());
+
+    // 3. O ESTADO DA VARREDURA
+    long long estado_ativo = 0;
+    long long melhor_resposta = 0;
+
+    for (const auto& ev : eventos) {
+        // int coord = ev.first; // Descomente se precisar da coordenada atual
+        int tipo = ev.second;
+
+        if (tipo == 1) {
+            // Processa Entrada (ex: adiciona intervalo ativo)
+            estado_ativo++;
+        } 
+        else if (tipo == -1) {
+            // Processa Saída (ex: remove intervalo ativo)
+            estado_ativo--;
+        }
+
+        // 4. ATUALIZAÇÃO DA RESPOSTA
+        melhor_resposta = max(melhor_resposta, estado_ativo);
+    }
+
+    return melhor_resposta;
+}
+===============================================================================

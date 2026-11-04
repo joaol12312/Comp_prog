@@ -1,0 +1,37 @@
+-------------------------------------------------------------------------------
+15. MODELO: BICOLORIDADE (Verificação de Grafo Bipartido)
+-------------------------------------------------------------------------------
+// Utiliza uma Busca em Profundidade (DFS) para tentar colorir o grafo usando 
+// apenas duas cores (0 e 1). Se dois vértices adjacentes tiverem a mesma cor,
+// o grafo possui um ciclo ímpar e não é bipartido.
+// Ideal para problemas de separação de elementos em dois grupos independentes.
+// Complexidade de Tempo: O(V + E) | Espaço: O(V) (Pilha de Recursão e Vetor)
+
+const int MAXN = 2e5 + 5;
+vector<int> adj[MAXN]; // Lista de adjacência do grafo
+int color[MAXN];       // Guarda a cor de cada nó: -1 (não visitado), 0 ou 1
+
+// NOTA: Antes de chamar a DFS pela primeira vez num componente, não se esqueça
+// de inicializar o vetor (memset(color, -1, sizeof(color))) e atribuir a cor
+// inicial à raiz (ex: color[raiz] = 0).
+
+bool dfs(int u) {
+    // Itera sobre todos os vizinhos do nó 'u'
+    for (int v : adj[u]) {
+        if (color[v] == -1) {
+            // Se o vizinho ainda não foi visitado, recebe a cor oposta
+            color[v] = !color[u];
+            
+            // Desce recursivamente. Se a sub-árvore falhar, propaga o false
+            if (!dfs(v)) return false;
+        }
+        // Se o vizinho já foi colorido e tem exatamente a mesma cor do nó atual,
+        // foi detetado um conflito (ciclo ímpar). O grafo não é bipartido.
+        else if (color[v] == color[u]) {
+            return false;
+        }
+    }
+    // Se todos os vizinhos foram processados sem conflitos, retorna verdadeiro
+    return true;
+}
+===============================================================================

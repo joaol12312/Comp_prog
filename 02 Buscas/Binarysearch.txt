@@ -1,0 +1,27 @@
+-------------------------------------------------------------------------------
+1. MODELO: BUSCA BINÁRIA NA RESPOSTA (Binary Search on Answer)
+-------------------------------------------------------------------------------
+// Encontra o menor valor 'x' no intervalo [low, high] que satisfaz a condição check(x).
+// Requer que check(x) seja monótona (false para x < ans, true para x >= ans).
+// Complexidade de Tempo: O(log(high - low) * T_check) | Espaço: O(1)
+
+bool check(long long val) {
+    // Implementar a validação da condição do problema.
+    // Retorna true se 'val' é válido/suficiente, false caso contrário.
+    return true;
+}
+
+long long binary_search_answer(long long low, long long high) {
+    long long ans = high;
+    while (low <= high) {
+        long long mid = low + (high - low) / 2;
+        if (check(mid)) {
+            ans = mid;
+            high = mid - 1; // Tenta encontrar um valor válido ainda menor
+        } else {
+            low = mid + 1;  // O valor atual é insuficiente, busca maior
+        }
+    }
+    return ans;
+}
+===============================================================================

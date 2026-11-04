@@ -1,0 +1,57 @@
+-------------------------------------------------------------------------------
+16. MODELO: ORDENAÇÃO TOPOLÓGICA (Topological Sort / Algoritmo de Kahn)
+-------------------------------------------------------------------------------
+// Ordena os vértices de um Grafo Dirigido Acíclico (DAG) linearmente de modo que,
+// para cada aresta u -> v, o vértice 'u' apareça antes de 'v' na ordenação.
+// Utilizado classicamente para resolver problemas de dependência de tarefas
+// (ex: ordenação de pré-requisitos de disciplinas).
+// Complexidade de Tempo: O(V + E) | Espaço: O(V) (Fila e Vetores)
+
+const int MAXN = 2e5 + 5;
+vector<int> adj[MAXN]; // Lista de adjacência do grafo dirigido
+int indeg[MAXN];       // Grau de entrada (in-degree) de cada vértice
+int n;                 // Número total de vértices (assumindo 1-indexed: 1 a n)
+
+vector<int> toposort() {
+    memset(indeg, 0, sizeof(indeg));
+    vector<int> ord; // Armazena o resultado da ordenação topológica
+    
+    // 1. Calcula o grau de entrada (número de arestas que chegam) de cada vértice
+    for (int u = 1; u <= n; u++) {
+        for (int v : adj[u]) {
+            indeg[v]++;
+        }
+    }
+    
+    queue<int> q;
+    
+    // 2. Insere na fila todos os vértices iniciais (grau de entrada 0 / sem dependências)
+    for (int u = 1; u <= n; u++) {
+        if (indeg[u] == 0) {
+            q.push(u);
+        }
+    }
+    
+    // 3. Processamento iterativo (semelhante à BFS)
+    while (!q.empty()) {
+        int u = q.front(); 
+        q.pop();
+        ord.push_back(u);
+        
+        // Simula a remoção do vértice 'u', diminuindo o grau dos seus vizinhos
+        for (int v : adj[u]) {
+            indeg[v]--;
+            // Se o vizinho deixou de ter dependências pendentes, entra na fila
+            if (indeg[v] == 0) {
+                q.push(v);
+            }
+        }
+    }
+    
+    // 4. Verificação de existência de ciclos
+    // Se ord.size() < n, significa que alguns nós nunca chegaram a ter grau 0,
+    // logo, existe um ciclo no grafo e não há ordenação topológica válida.
+    
+    return ord;
+}
+===============================================================================

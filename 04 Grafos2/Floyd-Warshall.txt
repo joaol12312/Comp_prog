@@ -1,0 +1,33 @@
+-------------------------------------------------------------------------------
+19. MODELO: FLOYD-WARSHALL (Todos Contra Todos)
+-------------------------------------------------------------------------------
+// Encontra as distâncias mínimas entre TODOS os pares de vértices no grafo.
+// Aceita arestas negativas, mas falha silenciosamente se houver ciclos negativos
+// (para ciclos negativos, verifique se dist[i][i] < 0 no final).
+// Complexidade de Tempo: O(V^3) | Espaço: O(V^2)
+
+const int MAXN = 505; // Cuidado com o tamanho, V^3 limita N em torno de 500
+const int INF = 1e9;  // Use 1e18 para long long
+
+int dist[MAXN][MAXN]; // Matriz de adjacência (custos das arestas)
+int n;                // Número de vértices (assumindo 1 a n)
+
+// NOTA: Inicialização obrigatória ANTES de chamar a função:
+// 1. Para todo i, j: dist[i][j] = INF (se não houver aresta direta)
+// 2. Para todo i: dist[i][i] = 0[cite: 8]
+// 3. Lê as arestas: dist[u][v] = custo (e dist[v][u] = custo se não-direcionado)
+
+void floyd_warshall() {
+    // Para cada vértice 'k' usado como ponte intermediária[cite: 8]
+    for (int k = 1; k <= n; k++) {
+        // Para cada vértice de origem 'u'[cite: 8]
+        for (int u = 1; u <= n; u++) {
+            // Para cada vértice de destino 'v'[cite: 8]
+            for (int v = 1; v <= n; v++) {
+                // Tenta relaxar o caminho de 'u' para 'v' passando por 'k'[cite: 8]
+                dist[u][v] = min(dist[u][v], dist[u][k] + dist[k][v]);[cite: 8]
+            }
+        }
+    }
+}
+===============================================================================

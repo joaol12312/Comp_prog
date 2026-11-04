@@ -1,0 +1,221 @@
+-------------------------------------------------------------------------------
+34. MODELO: DP GENÉRICA COM RECONSTRUÇÃO DE RESPOSTA (Pattern Retrieve)
+-------------------------------------------------------------------------------
+// Estrutura genérica para Programação Dinâmica Top-Down com Reconstrução de Caminho.
+// Utiliza uma matriz de transição para armazenar as decisões ótimas de cada estado.
+// Complexidade de Tempo: O(Estados) na DP e O(Comprimento do Caminho) no Retrieve
+
+const int MAXN = 1e3 + 5;
+int dp[MAXN][MAXN];
+pair<int, int> transicao[MAXN][MAXN];
+
+// NOTA: Inicialize a matriz 'dp' com -1 antes de resolver o problema:
+// memset(dp, -1, sizeof(dp));
+// Chamada inicial da DP: solve(0, 0)
+// Chamada inicial do Retrieve: retrieve(0, 0)
+
+bool chegou_no_fim(int i, int j) {
+    // Condição de parada (caso base) da DP e do Retrieve
+    return (i == MAXN || j == MAXN);
+}
+
+int solve(int i, int j) {
+    if (chegou_no_fim(i, j)) return 0;
+    if (dp[i][j] != -1) return dp[i][j];
+
+    // Calcula os caminhos possíveis
+    int caminho_1 = 1 + solve(i + 1, j + 1); // Exemplo de transição 1
+    int caminho_2 = solve(i + 1, j);         // Exemplo de transição 2
+
+    // Armazena no array de transição o próximo estado da melhor escolha
+    if (caminho_1 > caminho_2) {
+        transicao[i][j] = {i + 1, j + 1};
+        return dp[i][j] = caminho_1;
+    } else {
+        transicao[i][j] = {i + 1, j};
+        return dp[i][j] = caminho_2;
+    }
+}
+
+void retrieve(int i, int j) {
+    while (!chegou_no_fim(i, j)) {
+        int prox_i = transicao[i][j].first;
+        int prox_j = transicao[i][j].second;
+
+        // Lógica específica do problema: verifica se a transição realizou uma ação
+        // Exemplo: se ambos os índices avançaram, o elemento atual faz parte da resposta
+        if (prox_i == i + 1 && prox_j == j + 1) {
+            // Processa ou armazena o elemento da resposta
+        }
+
+        // Transiciona para o próximo estado ótimo
+        i = prox_i;
+        j = prox_j;
+    }
+}
+===============================================================================
+
+-------------------------------------------------------------------------------
+35. MODELO: KNAPSACK 0/1 COM RECONSTRUÇÃO DE RESPOSTA (Retrieve)
+-------------------------------------------------------------------------------
+// Mochila 0/1 com recuperação dos índices dos itens selecionados.
+// Complexidade de Tempo: O(N * W) | Espaço: O(N * W) (Tabela DP + Transição)
+
+const int MAXN = 1e3 + 5;
+const int MAXW = 1e4 + 5;
+int dp[MAXN][MAXW];
+pair<int, int> transicao[MAXN][MAXW];
+vector<int> v, w;
+
+// NOTA: Inicialize 'dp' com -1 antes da primeira chamada:
+// memset(dp, -1, sizeof(dp));
+
+int solve_knapsack(int i, int cap) {
+    if (i == (int)v.size()) return 0;
+    if (dp[i][cap] != -1) return dp[i][cap];
+
+    int nao_pega = solve_knapsack(i + 1, cap);
+    int pega = 0;
+
+    if (cap >= w[i]) {
+        pega = v[i] + solve_knapsack(i + 1, cap - w[i]);
+    }
+
+    if (pega > nao_pega) {
+        transicao[i][cap] = {i + 1, cap - w[i]};
+        return dp[i][cap] = pega;
+    } else {
+        transicao[i][cap] = {i + 1, cap};
+        return dp[i][cap] = nao_pega;
+    }
+}
+
+vector<int> retrieve_knapsack(int cap) {
+    vector<int> escolhidos;
+    int i = 0;
+
+    while (i < (int)v.size()) {
+        auto [prox_i, prox_cap] = transicao[i][cap];
+
+        // Se a capacidade diminuiu, o item 'i' foi incluído na mochila
+        if (prox_cap < cap) {
+            escolhidos.push_back(i);
+        }
+
+        i = prox_i;
+        cap = prox_cap;
+    }
+
+    return escolhidos;
+}
+===============================================================================
+
+-------------------------------------------------------------------------------
+36. MODELO: LIS COM RECONSTRUÇÃO DE RESPOSTA (Retrieve)
+-------------------------------------------------------------------------------
+// Maior Subsequência Estritamente Crescente (LIS) com reconstrução dos elementos.
+// Trata o índice 'prev = -1' usando o deslocamento 'prev + 1' na matriz.
+// Complexidade de Tempo: O(N^2) | Espaço: O(N^2) (Tabela DP + Transição)
+
+const int MAXN = 1e3 + 5;
+int dp[MAXN][MAXN];
+pair<int, int> transicao[MAXN][MAXN];
+vector<int> v;
+
+// NOTA: Inicialize 'dp' com -1 antes da primeira chamada:
+// memset(dp, -1, sizeof(dp));
+
+int solve_lis(int i, int prev) {
+    if (i == (int)v.size()) return 0;
+    if (dp[i][prev + 1] != -1) return dp[i][prev + 1];
+
+    int nao_pega = solve_lis(i + 1, prev);
+    int pega = 0;
+
+    if (prev == -1 || v[i] > v[prev]) {
+        pega = 1 + solve_lis(i + 1, i);
+    }
+
+    if (pega > nao_pega) {
+        transicao[i][prev + 1] = {i + 1, i};
+        return dp[i][prev + 1] = pega;
+    } else {
+        transicao[i][prev + 1] = {i + 1, prev};
+        return dp[i][prev + 1] = nao_pega;
+    }
+}
+
+vector<int> retrieve_lis() {
+    vector<int> lis_elementos;
+    int i = 0, prev = -1;
+
+    while (i < (int)v.size()) {
+        auto [prox_i, prox_prev] = transicao[i][prev + 1];
+
+        // Se o ponteiro do elemento anterior mudou para 'i', v[i] foi incluído
+        if (prox_prev == i) {
+            lis_elementos.push_back(v[i]);
+        }
+
+        i = prox_i;
+        prev = prox_prev;
+    }
+
+    return lis_elementos;
+}
+===============================================================================
+
+-------------------------------------------------------------------------------
+37. MODELO: LCS COM RECONSTRUÇÃO DE RESPOSTA (Retrieve)
+-------------------------------------------------------------------------------
+// Maior Subsequência Comum (LCS) com reconstrução da string resultante.
+// Complexidade de Tempo: O(|s1| * |s2|) | Espaço: O(|s1| * |s2|) (Tabela DP + Transição)
+
+const int MAXS = 1e3 + 5;
+int dp[MAXS][MAXS];
+pair<int, int> transicao[MAXS][MAXS];
+string s1, s2;
+
+// NOTA: Inicialize 'dp' com -1 antes da primeira chamada:
+// memset(dp, -1, sizeof(dp));
+
+int solve_lcs(int i, int j) {
+    if (i == (int)s1.size() || j == (int)s2.size()) return 0;
+    if (dp[i][j] != -1) return dp[i][j];
+
+    if (s1[i] == s2[j]) {
+        transicao[i][j] = {i + 1, j + 1};
+        return dp[i][j] = 1 + solve_lcs(i + 1, j + 1);
+    }
+
+    int op1 = solve_lcs(i + 1, j);
+    int op2 = solve_lcs(i, j + 1);
+
+    if (op1 >= op2) {
+        transicao[i][j] = {i + 1, j};
+        return dp[i][j] = op1;
+    } else {
+        transicao[i][j] = {i, j + 1};
+        return dp[i][j] = op2;
+    }
+}
+
+string retrieve_lcs() {
+    string ans = "";
+    int i = 0, j = 0;
+
+    while (i < (int)s1.size() && j < (int)s2.size()) {
+        auto [prox_i, prox_j] = transicao[i][j];
+
+        // Avançou na diagonal: ambos os caracteres combinam
+        if (prox_i == i + 1 && prox_j == j + 1) {
+            ans += s1[i];
+        }
+
+        i = prox_i;
+        j = prox_j;
+    }
+
+    return ans;
+}
+===============================================================================

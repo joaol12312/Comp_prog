@@ -1,0 +1,29 @@
+-------------------------------------------------------------------------------
+24. MODELO: KRUSKAL (Árvore Geradora Mínima / MST)
+-------------------------------------------------------------------------------
+// Encontra a Árvore Geradora Mínima (MST) de um grafo não direcionado.
+// Utiliza a estrutura DSU (Union-Find) para evitar a formação de ciclos.
+// Complexidade de Tempo: O(E log E) (ordenação) | Espaço: O(E + V) (Arestas + DSU)
+
+// Depende das funções globais do DSU previamente implementadas: find(u) e join(u, v)
+
+// vector de tuplas: {custo, vértice_u, vértice_v}
+// long long para evitar overflow na soma dos custos
+long long kruskal(int n, vector<tuple<int, int, int>>& arestas) {
+    long long resp = 0;
+    
+    // O sort nativo ordena automaticamente pelo primeiro elemento da tupla (custo)
+    sort(arestas.begin(), arestas.end());
+    
+    // Itera sobre todas as arestas da menor para a maior
+    for (auto [c, u, v] : arestas) {
+        // Se 'u' e 'v' estiverem em componentes diferentes, a aresta é segura
+        if (find(u) != find(v)) {
+            resp += c;   // Adiciona o custo da aresta à resposta
+            join(u, v);  // Une os conjuntos de 'u' e 'v'
+        }
+    }
+    
+    return resp;
+}
+===============================================================================

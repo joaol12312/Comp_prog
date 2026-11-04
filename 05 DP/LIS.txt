@@ -1,0 +1,36 @@
+-------------------------------------------------------------------------------
+30. MODELO: LIS (Longest Increasing Subsequence via DP Recursiva)
+-------------------------------------------------------------------------------
+// Encontra o comprimento da Maior Subsequência Estritamente Crescente (LIS).
+// Utiliza Programação Dinâmica Recursiva (Top-Down) deslocando o índice 'prev'
+// em +1 na tabela de memoização (prev + 1) para permitir o valor neutro -1.
+// Complexidade de Tempo: O(N^2) | Espaço: O(N^2) (Tabela da DP)
+
+const int MAXN = 1e3 + 5;
+int dp[MAXN][MAXN];
+vector<int> v;
+
+// NOTA: Inicialize a matriz 'dp' com -1 antes da primeira chamada:
+// memset(dp, -1, sizeof(dp));
+// Chamada inicial: solve(0, -1)
+
+int solve(int i, int prev) {
+    // Caso base: chegou ao fim do vetor
+    if (i == (int)v.size()) return 0;
+    
+    // Consulta a DP ajustando a coordenada (prev + 1 para lidar com -1)
+    if (dp[i][prev + 1] != -1) return dp[i][prev + 1];
+
+    // Opção 1: Não incluir o elemento atual na subsequência
+    int nao_pega = solve(i + 1, prev);
+    int pega = 0;
+
+    // Opção 2: Incluir o elemento atual (se for o primeiro ou estritamente maior que o anterior)
+    if (prev == -1 || v[i] > v[prev]) {
+        pega = 1 + solve(i + 1, i);
+    }
+
+    // Memoiza e retorna a melhor decisão
+    return dp[i][prev + 1] = max(nao_pega, pega);
+}
+===============================================================================

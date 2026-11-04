@@ -1,0 +1,49 @@
+-------------------------------------------------------------------------------
+10. MODELO: BACKTRACKING (Busca Exaustiva com Poda / Recursão)
+-------------------------------------------------------------------------------
+// Explora sistematicamente todas as configurações possíveis, construindo a
+// solução passo a passo. Abandona (poda) caminhos inválidos precocemente.
+// Complexidade de Tempo: O(2^N) subconjuntos, O(N!) permutações | Espaço: O(N) recursão
+
+// Função auxiliar para a Poda (Pruning)
+bool eh_valida(int opcao /* , estado atual, variáveis globais... */) {
+    // Retorna true se a 'opcao' pode ser adicionada à solução de forma válida.
+    // Retorna false se violar alguma restrição do problema, cortando a busca.
+    return true; 
+}
+
+// Função executada quando uma solução completa e válida é alcançada
+void processa_solucao(const vector<int>& solucao_parcial) {
+    // Ex: Imprimir o vetor, atualizar uma variável de "menor custo/maior lucro",
+    // ou adicionar a um vector<vector<int>> de respostas finais.
+}
+
+void backtrack(int estado, int tamanho_alvo, vector<int>& solucao_parcial) {
+    // 1. CASO BASE (Condição de Parada / Sucesso)
+    if (estado == tamanho_alvo) {
+        processa_solucao(solucao_parcial);
+        return;
+    }
+
+    // 2. TRANSIÇÕES (Iterar pelas opções/caminhos disponíveis a partir daqui)
+    // Pode ser um loop (ex: 0 a N-1), iterar sobre vizinhos em um grafo, etc.
+    for (int opcao = 0; opcao < /* NUMERO_DE_OPCOES */; opcao++) {
+        
+        // 3. PODA (Pruning)
+        if (!eh_valida(opcao)) {
+            continue; // Se não for válido, pula esta opção imediatamente
+        }
+
+        // 4. FAZER A ESCOLHA
+        solucao_parcial.push_back(opcao);
+        // Ex: Marcar vis[opcao] = true;
+
+        // 5. CHAMADA RECURSIVA (Avançar para o próximo passo)
+        backtrack(estado + 1, tamanho_alvo, solucao_parcial);
+
+        // 6. DESFAZER A ESCOLHA (Backtrack / "Voltar atrás")
+        solucao_parcial.pop_back();
+        // Ex: Desmarcar vis[opcao] = false;
+    }
+}
+===============================================================================

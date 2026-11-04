@@ -1,0 +1,47 @@
+-------------------------------------------------------------------------------
+25. MODELO: FATORIAL COM MEMOIZATION (Programação Dinâmica Top-Down)
+-------------------------------------------------------------------------------
+// Calcula o fatorial de N com restrição modular usando programação dinâmica.
+// A memoização evita recalcular subproblemas já resolvidos.
+// Complexidade de Tempo: O(N) no primeiro cálculo, O(1) em chamadas subsequentes | Espaço: O(N)
+
+const int MAXN = 2e5 + 5;
+const int MOD = 1e9 + 7;
+long long memo_fat[MAXN];
+
+// NOTA: Inicialize o vetor de memoização com -1 antes da primeira chamada:
+// memset(memo_fat, -1, sizeof(memo_fat));
+
+long long fat(int n) {
+    if (n == 0) return 1;
+    if (memo_fat[n] != -1) return memo_fat[n];
+    
+    long long ans = (n * fat(n - 1)) % MOD;
+    memo_fat[n] = ans;
+    return memo_fat[n];
+}
+===============================================================================
+-------------------------------------------------------------------------------
+26. MODELO: FIBONACCI COM MEMOIZATION (Programação Dinâmica Top-Down)
+-------------------------------------------------------------------------------
+// Calcula o N-ésimo termo da sequência de Fibonacci utilizando memoização.
+// Transforma a complexidade exponencial da recursão simples em linear.
+// Complexidade de Tempo: O(N) | Espaço: O(N)
+
+const int MAXN = 2e5 + 5;
+const int MOD = 1e9 + 7; // Opcional caso o problema peça aritmética modular
+long long memo_fib[MAXN];
+
+// NOTA: Inicialize o vetor de memoização com -1 antes da primeira chamada:
+// memset(memo_fib, -1, sizeof(memo_fib));
+
+long long fib(int n) {
+    if (n == 0) return 0;
+    if (n == 1) return 1;
+    if (memo_fib[n] != -1) return memo_fib[n];
+    
+    long long ans = (fib(n - 1) + fib(n - 2)) % MOD;
+    memo_fib[n] = ans;
+    return memo_fib[n];
+}
+===============================================================================

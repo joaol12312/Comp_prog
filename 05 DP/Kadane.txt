@@ -1,0 +1,41 @@
+-------------------------------------------------------------------------------
+28. MODELO: ALGORITMO DE KADANE VIA DP (Maior Soma de Subvetor Contínuo)
+-------------------------------------------------------------------------------
+// Encontra a maior soma possível de um subvetor contínuo não-vazio.
+// Implementado via Programação Dinâmica Recursiva (Top-Down com Memoization),
+// controlando explicitamente os estados: antes de iniciar o subvetor e após iniciá-lo.
+// Complexidade de Tempo: O(N) | Espaço: O(N) (Estados da DP)
+
+const int INF = 1e9;
+const int MAXN = 1e6 + 5;
+int dp[MAXN][2];
+int n;
+vector<int> v;
+
+// NOTA: Inicialize o vetor 'dp' com -1 antes da primeira chamada:
+// memset(dp, -1, sizeof(dp));
+
+int solve(int i, bool comecei) {
+    // Caso base: chegou ao final do vetor
+    if (i == n) {
+        if (!comecei) return -INF; // Deve pegar pelo menos um elemento
+        else return 0;
+    }
+
+    // Se já foi calculado, retorna o resultado memoizado
+    if (dp[i][comecei] != -1) return dp[i][comecei];
+
+    // Transição 1: Pega o elemento atual e obriga o próximo a continuar o subvetor
+    int peguei = v[i] + solve(i + 1, 1);
+
+    if (!comecei) {
+        // Se ainda não começou o subvetor, escolhe entre começar aqui ou ignorar
+        int ignorei = solve(i + 1, comecei);
+        return dp[i][comecei] = max(peguei, ignorei);
+    } else {
+        // Se já começou o subvetor, escolhe entre continuar ou parar no elemento anterior
+        int parei = 0;
+        return dp[i][comecei] = max(peguei, parei);
+    }
+}
+===============================================================================

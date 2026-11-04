@@ -1,0 +1,25 @@
+-------------------------------------------------------------------------------
+27. MODELO: PROBABILIDADE COM PROGRAMAÇÃO DINÂMICA (DP em Probabilidade)
+-------------------------------------------------------------------------------
+// Transição de estados utilizando Programação Dinâmica com ponto flutuante (double).
+// Utilizado para calcular probabilidades/esperanças em processos estocásticos.
+// Complexidade de Tempo: O(N) | Espaço: O(N)
+
+const int MAXN = 2e5 + 5;
+double dp[MAXN];
+int n, k;
+
+// NOTA: Inicialize o vetor 'dp' com valores negativos (ex: -1.0) antes de resolver:
+// for (int i = 0; i <= n; i++) dp[i] = -1.0;
+
+double solve(int i) {
+    if (i == n) return 0;
+    if (dp[i] >= 0) return dp[i];
+    
+    // Transição multiplicativa de probabilidades/esperança
+    double ans = (1.0 * k) / (k - 1) * solve(i + 1);
+    
+    dp[i] = ans;
+    return ans;
+}
+===============================================================================

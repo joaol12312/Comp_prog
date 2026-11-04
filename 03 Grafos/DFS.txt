@@ -1,0 +1,51 @@
+-------------------------------------------------------------------------------
+12. MODELO: CONSTRUÇÃO DO GRAFO (Preenchendo a Lista de Adjacência)
+-------------------------------------------------------------------------------
+// Lê as 'M' arestas da entrada e popula o array de vectors.
+// Complexidade de Tempo: O(E) | Espaço: O(V + E) onde E é o num_arestas.
+
+// Variáveis globais (já declaradas no topo do código):
+// const int MAXN = 2e5 + 5;
+// vector<int> adj[MAXN];
+
+void build_graph(int num_arestas) {
+    for (int i = 0; i < num_arestas; i++) {
+        int u, v;
+        cin >> u >> v;
+        
+        // Aresta de 'u' para 'v'
+        adj[u].push_back(v);
+        
+        // Se o grafo for NÃO DIRECIONADO (bidirecional), adiciona a volta:
+        adj[v].push_back(u);
+    }
+}
+===============================================================================-------------------------------------------------------------------------------
+11. MODELO: DFS (Busca em Profundidade / Depth-First Search)
+-------------------------------------------------------------------------------
+// Algoritmo clássico de travessia de grafos. Explora o máximo de profundidade
+// possível em cada ramo antes de retroceder (backtrack).
+// Útil para encontrar componentes conexos, detecção de ciclos e top sort.
+// Complexidade de Tempo: O(V + E) | Espaço: O(V) (Pilha de Recursão)
+
+const int MAXN = 2e5 + 5;
+vector<int> adj[MAXN]; // Lista de adjacência do grafo
+bool vis[MAXN];        // Marca se o vértice já foi visitado (inicializa com false)
+
+void dfs(int u) {
+    // 1. Marca o vértice atual como visitado
+    vis[u] = true;
+    
+    // (Opcional) Processamento na "ida" do nó (Pre-order)
+    
+    // 2. Itera sobre todos os vizinhos na lista de adjacência
+    for (int v : adj[u]) {
+        if (!vis[v]) {
+            // Se o vizinho não foi visitado, desce recursivamente
+            dfs(v);
+        }
+    }
+    
+    // (Opcional) Processamento na "volta" do nó (Post-order)
+}
+===============================================================================

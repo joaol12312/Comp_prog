@@ -1,0 +1,37 @@
+-------------------------------------------------------------------------------
+32. MODELO: KNAPSACK 0/1 (Problema da Mochila via DP Recursiva)
+-------------------------------------------------------------------------------
+// Determina o valor máximo acumulado que se pode carregar numa mochila de capacidade 'cap'[cite: 13].
+// Utiliza Programação Dinâmica Top-Down com Memoização para decidir entre incluir
+// ou ignorar cada item (0/1 Knapsack)[cite: 13].
+// Complexidade de Tempo: O(N * W) | Espaço: O(N * W) (Tabela da DP)[cite: 13]
+
+const int MAXN = 1e3 + 5;
+const int MAXW = 1e4 + 5;
+int dp[MAXN][MAXW];
+vector<int> v, w;
+
+// NOTA: Inicialize a matriz 'dp' com -1 antes da primeira chamada:
+// memset(dp, -1, sizeof(dp));
+// Chamada inicial: solve(0, capacidade_maxima)
+
+int solve(int i, int cap) {
+    // Caso base: processou todos os itens disponíveis
+    if (i == (int)v.size()) return 0;
+
+    // Retorna o resultado previamente calculado
+    if (dp[i][cap] != -1) return dp[i][cap];
+
+    // Opção 1: Não incluir o item 'i' na mochila
+    int nao_pega = solve(i + 1, cap);
+    int pega = 0;
+
+    // Opção 2: Incluir o item 'i' (se houver capacidade suficiente)
+    if (cap >= w[i]) {
+        pega = v[i] + solve(i + 1, cap - w[i]);
+    }
+
+    // Memoiza e retorna o maior valor obtido
+    return dp[i][cap] = max(nao_pega, pega);
+}
+===============================================================================

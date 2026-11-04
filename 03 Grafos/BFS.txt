@@ -1,0 +1,108 @@
+-------------------------------------------------------------------------------
+11. MODELO: DFS (Busca em Profundidade / Depth-First Search)
+-------------------------------------------------------------------------------
+// Algoritmo clássico de travessia de grafos. Explora o máximo de profundidade
+// possível em cada ramo antes de retroceder (backtrack).
+// Útil para encontrar componentes conexos, detecção de ciclos e top sort.
+// Complexidade de Tempo: O(V + E) | Espaço: O(V) (Pilha de Recursão)
+
+const int MAXN = 2e5 + 5;
+vector<int> adj[MAXN]; // Lista de adjacência do grafo
+bool vis[MAXN];        // Marca se o vértice já foi visitado (inicializa com false)
+
+void dfs(int u) {
+    // 1. Marca o vértice atual como visitado
+    vis[u] = true;
+    
+    // (Opcional) Processamento na "ida" do nó (Pre-order)
+    
+    // 2. Itera sobre todos os vizinhos na lista de adjacência
+    for (int v : adj[u]) {
+        if (!vis[v]) {
+            // Se o vizinho não foi visitado, desce recursivamente
+            dfs(v);
+        }
+    }
+    
+    // (Opcional) Processamento na "volta" do nó (Post-order)
+}
+===============================================================================
+-------------------------------------------------------------------------------
+13. MODELO: BFS (Busca em Largura / Breadth-First Search)
+-------------------------------------------------------------------------------
+// Algoritmo clássico de travessia que explora o grafo em camadas (níveis).
+// É a solução ideal e definitiva para encontrar o caminho mais curto (menor 
+// número de arestas) de uma origem a todos os outros nós em grafos não ponderados.
+// Complexidade de Tempo: O(V + E) | Espaço: O(V) (Fila e Vetor de Distâncias)
+
+const int MAXN = 2e5 + 5;
+vector<int> adj[MAXN]; // Lista de adjacência do grafo
+int dist[MAXN];        // Guarda a distância da origem até cada vértice (-1 se não visitado)
+
+void bfs(int s) {
+    // Inicializa todas as distâncias com -1 (indicando que não foram visitados)
+    memset(dist, -1, sizeof(dist));
+    
+    dist[s] = 0; // A distância da origem para ela mesma é 0
+    queue<int> q;
+    q.push(s);
+
+    while (!q.empty()) {
+        int u = q.front(); 
+        q.pop();
+
+        // Itera sobre todos os vizinhos do nó 'u'
+        for (int v : adj[u]) if (dist[v] == -1) {
+            dist[v] = dist[u] + 1; // A distância do vizinho é a distância de 'u' + 1
+            q.push(v);             // Coloca o vizinho na fila para ser explorado depois
+        }
+    }
+}
+===============================================================================
+-------------------------------------------------------------------------------
+14. MODELO: BFS EM GRID (Busca em Largura em Matriz 2D)
+-------------------------------------------------------------------------------
+// Algoritmo para encontrar o menor caminho em um labirinto ou malha 2D.
+// Utiliza vetores de direção (di, dj) para visitar vizinhos (cima, baixo, 
+// esquerda, direita) e verifica limites da matriz e obstáculos (ex: '#').
+// Complexidade de Tempo: O(N * M) | Espaço: O(N * M) (Fila e Matriz de Distâncias)
+
+// Vetores de direção: Baixo, Cima, Direita, Esquerda
+int di[] = {1, -1, 0, 0};
+int dj[] = {0, 0, 1, -1};
+
+const int MAXN = 1e3 + 5;
+int n, m;              // Dimensões do grid (linhas e colunas)
+char grid[MAXN][MAXN]; // Representação do mapa
+int dist[MAXN][MAXN];  // Guarda a distância da origem até cada célula (-1 se não visitado)
+
+// Verifica se a coordenada (i, j) está dentro dos limites válidos do grid
+bool valid(int i, int j) { 
+    return i >= 0 and i < n and j >= 0 and j < m; 
+}
+
+void bfs(int si, int sj) {
+    // Inicializa todas as distâncias com -1 (indicando que não foram visitados)
+    memset(dist, -1, sizeof(dist));
+    
+    queue<pair<int, int>> q;
+    dist[si][sj] = 0; // A distância da origem para ela mesma é 0
+    q.push({si, sj});
+
+    while (!q.empty()) {
+        auto [i, j] = q.front(); 
+        q.pop();
+        
+        // Itera sobre as 4 direções adjacentes possíveis
+        for (int k = 0; k < 4; k++) {
+            int ni = i + di[k], nj = j + dj[k];
+            
+            // Se for uma célula dentro dos limites, não visitada e NÃO for um obstáculo
+            if (valid(ni, nj) and dist[ni][nj] == -1 and grid[ni][nj] != '#') {
+                dist[ni][nj] = dist[i][j] + 1; // Incrementa a distância
+                q.push({ni, nj});              // Adiciona na fila para exploração
+            }
+        }
+    }
+}
+===============================================================================

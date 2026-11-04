@@ -1,0 +1,33 @@
+-------------------------------------------------------------------------------
+31. MODELO: LCS (Longest Common Subsequence via DP Recursiva)
+-------------------------------------------------------------------------------
+// Encontra o comprimento da Maior Subsequência Comum entre duas strings (s1 e s2).
+// Utiliza Programação Dinâmica Top-Down com Memoization baseada nas posições (i, j).
+// Complexidade de Tempo: O(|s1| * |s2|) | Espaço: O(|s1| * |s2|) (Tabela da DP)
+
+const int MAXS = 1e3 + 5;
+int dp[MAXS][MAXS];
+string s1, s2;
+
+// NOTA: Inicialize a matriz 'dp' com -1 antes da primeira chamada:
+// memset(dp, -1, sizeof(dp));
+// Chamada inicial: solve(0, 0)
+
+int solve(int i, int j) {
+    // Caso base: se atingiu o fim de qualquer uma das duas strings
+    if (i == (int)s1.size() || j == (int)s2.size()) return 0;
+    
+    // Retorna o resultado caso já tenha sido calculado
+    if (dp[i][j] != -1) return dp[i][j];
+
+    // Se os caracteres atuais forem iguais, incrementa 1 e avança em ambas as strings
+    if (s1[i] == s2[j]) {
+        int iguais = 1 + solve(i + 1, j + 1);
+        return dp[i][j] = iguais;
+    }
+
+    // Se forem diferentes, testa avançar no primeiro caractere ou no segundo
+    int diferentes = max(solve(i + 1, j), solve(i, j + 1));
+    return dp[i][j] = diferentes;
+}
+===============================================================================

@@ -1,0 +1,53 @@
+-------------------------------------------------------------------------------
+38. MODELO: BIT SHIFTING (Deslocamento de Bits)
+-------------------------------------------------------------------------------
+// Deslocamento de bits para cálculo de potências de 2 e multiplicação/divisão rápida.
+// Shift Left (<<) equivale a multiplicar por 2^N.
+// Shift Right (>>) equivale a dividir por 2^N (divisão inteira).
+
+// 2^N usando inteiro de 32 bits
+int dois_elevado_a_n = (1 << n);
+
+// 2^N usando inteiro de 64 bits (necessário para N >= 32 para evitar overflow)
+long long dois_elevado_a_nll = (1LL << n);
+
+// Shift Right de 2^N em N vezes (retorna 1)
+int um = (dois_elevado_a_n >> n);
+
+// Multiplicação por 2 (x * 2)
+int dois_vezes_x = x * (1 << 1); // ou equivalentemente: x <<= 1;
+===============================================================================
+
+-------------------------------------------------------------------------------
+39. MODELO: OPERAÇÕES BÁSICAS COM BITS (Bit Manipulation)
+-------------------------------------------------------------------------------
+// Operações para checar, ativar, desativar e inverter bits em uma máscara (mask).
+
+// Checar se o i-ésimo bit está aceso (retorna valor não-zero se ativo)
+bool is_set = (mask & (1 << i)) != 0;
+
+// Ligar (setar para 1) o i-ésimo bit
+mask |= (1 << i);
+
+// Desligar (setar para 0) o i-ésimo bit
+mask &= ~(1 << i);
+
+// Flipar (inverter / XOR) o i-ésimo bit
+mask ^= (1 << i);
+===============================================================================
+
+-------------------------------------------------------------------------------
+40. MODELO: TRUQUES E BUILT-INS DE BITS (Bit Tricks & Popcount)
+-------------------------------------------------------------------------------
+// Truques úteis de manipulação de bits e funções built-in do GCC.
+
+// Extrair o LSB (Least Significant Bit - o bit aceso de menor valor)
+int lsb = mask & -(mask);
+
+// Testar se 'mask' é uma potência de 2
+bool pot2 = (mask > 0) && !(mask & (mask - 1));
+
+// Contar a quantidade de bits acesos (popcount)
+int bits_acesos = __builtin_popcount(mask);       // para inteiro de 32 bits
+int bits_acesos_ll = __builtin_popcountll(mask);  // para inteiro de 64 bits
+===============================================================================

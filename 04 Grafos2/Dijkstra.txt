@@ -1,0 +1,43 @@
+-------------------------------------------------------------------------------
+18. MODELO: DIJKSTRA (Menor Caminho em Grafos Ponderados)
+-------------------------------------------------------------------------------
+// Encontra o menor caminho de um vértice de origem para todos os outros
+// num grafo com pesos de arestas NÃO-NEGATIVOS.
+// Utiliza a priority_queue padrão (max-heap) armazenando distâncias negativas
+// para extrair sempre o menor valor de forma limpa e compacta.
+// Complexidade de Tempo: O((V + E) log V) | Espaço: O(V + E)
+
+const int MAXN = 2e5 + 5;
+const int INF = 1e9; // Caso os pesos sejam grandes, use long long e 1e18
+vector<pair<int, int>> adj[MAXN]; // adj[u] = {vizinho, custo_da_aresta}
+int dist[MAXN];                   // distâncias da origem até cada vértice
+
+// NOTA: Lembre-se de inicializar 'dist' com INF antes de chamar a função.
+// Ex: for (int i = 0; i <= n; i++) dist[i] = INF;
+
+void dijkstra(int start) {
+    dist[start] = 0;
+    priority_queue<pair<int, int>> pq;
+    pq.push({0, start}); // {distância, vértice}
+
+    while (!pq.empty()) {
+        auto [total, cur] = pq.top();
+        pq.pop();
+        
+        total = -total; // Inverte o sinal para recuperar a distância real
+
+        // Poda: se encontrarmos um caminho antigo e desatualizado na fila, ignoramos
+        if (dist[cur] < total) continue;
+
+        // Itera sobre os vizinhos do vértice atual
+        for (auto [viz, custo] : adj[cur]) {
+            // Relaxamento: se o novo caminho for estritamente melhor
+            if (dist[viz] > total + custo) {
+                dist[viz] = total + custo;
+                // Insere com peso negativo para a max-heap ordenar como min-heap
+                pq.push({-dist[viz], viz});
+            }
+        }
+    }
+}
+===============================================================================

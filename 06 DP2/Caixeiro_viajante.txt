@@ -1,0 +1,40 @@
+===============================================================================
+
+-------------------------------------------------------------------------------
+41. MODELO: TSP COM BITMASK DP (Problema do Caixeiro Viajante - Top-Down)
+-------------------------------------------------------------------------------
+// Encontra o circuito de menor custo visitando todos os N vértices e voltando à origem.
+// Representa os vértices já visitados como bits em uma máscara inteira (mask).
+// Complexidade de Tempo: O(N^2 * 2^N) | Espaço: O(N * 2^N)
+
+const int MAXN = 20;
+const int INF = 2e9;
+int n, m;
+int g[MAXN][MAXN];
+int dp[MAXN][1 << MAXN];
+
+// NOTA: Inicialize 'dp' com -1 antes da primeira chamada:
+// memset(dp, -1, sizeof(dp));
+// Chamada inicial: solve(0, 1) -> no vértice 0 com apenas o bit 0 aceso (mask = 1)
+
+int solve(int i, int mask) {
+    // Caso base: todos os N vértices foram visitados (mask = 2^N - 1)
+    if (mask == (1 << n) - 1) {
+        return g[i][0]; // Custo para retornar ao vértice inicial 0
+    }
+    
+    int& ans = dp[i][mask];
+    if (ans != -1) return ans;
+    
+    ans = INF;
+    for (int j = 0; j < n; j++) {
+        // Se o vértice 'j' já foi visitado nesta mask, ignora
+        if (mask & (1 << j)) continue;
+        
+        // Visita o vértice 'j' e liga o seu bit correspondente
+        ans = min(ans, g[i][j] + solve(j, mask ^ (1 << j)));
+    }
+    
+    return ans;
+}
+===============================================================================

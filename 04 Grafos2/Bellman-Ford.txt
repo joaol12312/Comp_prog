@@ -1,0 +1,39 @@
+-------------------------------------------------------------------------------
+20. MODELO: BELLMAN-FORD (Caminho Mínimo com Pesos Negativos)
+-------------------------------------------------------------------------------
+// Encontra o menor caminho de uma origem para todos os outros vértices,
+// suportando grafos com arestas de peso NEGATIVO. Também é utilizado
+// classicamente para detectar a presença de ciclos negativos.
+// Requer uma lista simples de arestas (edge list) em vez de lista de adjacência.
+// Complexidade de Tempo: O(V * E) | Espaço: O(V)
+
+const long long INF = 1e18; // Distância inicial infinita
+
+// Retorna as distâncias e um booleano indicando se há ciclo negativo
+pair<vector<long long>, bool> bellman_ford(int n, int s, const vector<tuple<int, int, long long>>& edges) {
+    // Inicializar as distâncias[cite: 9]
+    vector<long long> dist(n, INF);[cite: 9]
+    dist[s] = 0;[cite: 9]
+
+    // Bellman-Ford: relaxa todas as arestas (V - 1) vezes[cite: 9]
+    for (int rep = 0; rep < n - 1; rep++) {[cite: 9]
+        for (auto [u, v, w] : edges) {[cite: 9]
+            // Evita somar lixo/overflow a partir de um vértice inalcançável
+            if (dist[u] < INF) {
+                dist[v] = min(dist[v], dist[u] + w);[cite: 9]
+            }
+        }
+    }
+
+    // Ciclo negativo? Verifica se alguma aresta ainda pode ser relaxada[cite: 9]
+    bool cicloNegativo = false;[cite: 9]
+    for (auto [u, v, w] : edges) {[cite: 9]
+        if (dist[u] < INF && dist[v] > dist[u] + w) {[cite: 9]
+            cicloNegativo = true;[cite: 9]
+            // break; (pode interromper aqui caso só queira saber se existe)
+        }
+    }
+
+    return {dist, cicloNegativo};
+}
+===============================================================================
