@@ -1,0 +1,39 @@
+-------------------------------------------------------------------------------
+44. MODELO: BITMASK DP ITERATIVA GENÉRICA (Push / Forward DP)
+-------------------------------------------------------------------------------
+// Padrão de Programação Dinâmica Bottom-Up com Bitmask usando o estilo Push (Forward).
+// Transiciona do estado atual (mask, i) estendendo a solução para um elemento 'j' não visitado.
+// Útil para problemas de caminhos mínimos/máximos, Caixeiro Viajante e ordenação de estados.
+// Complexidade de Tempo: O(N^2 * 2^N) | Espaço: O(N * 2^N)
+
+const int MAXN = 20;
+const int INF = 1e9; // Use INF para minimização ou -1 para estado inválido/não atingível
+int dp[1 << MAXN][MAXN];
+int g[MAXN][MAXN];   // Matriz de custos/pesos ou adjacência entre os elementos i e j
+
+// NOTA DE INICIALIZAÇÃO:
+// 1. Limpe a matriz 'dp' com o valor neutro (ex: -1 ou INF):
+//    memset(dp, -1, sizeof(dp));
+// 2. Defina o(s) caso(s) base inicial(is) para cada possível elemento de partida:
+//    for (int i = 0; i < n; i++) dp[1 << i][i] = valor_inicial;
+
+void solve_bitmask_push(int n) {
+    // Itera por todas as máscaras de subconjuntos possíveis
+    for (int mask = 1; mask < (1 << n); mask++) {
+        for (int i = 0; i < n; i++) {
+            // Validação: 'i' precisa estar presente na mask e o estado atual deve ser atingível
+            if (!(mask & (1 << i)) || dp[mask][i] == -1) continue;
+
+            for (int j = 0; j < n; j++) {
+                // Tenta estender o caminho para o elemento 'j' que ainda NÃO foi visitado na mask
+                if (!(mask & (1 << j))) {
+                    int next_mask = mask | (1 << j);
+                    
+                    // Transição PUSH: o estado atual (mask, i) atualiza o próximo estado (next_mask, j)
+                    dp[next_mask][j] = max(dp[next_mask][j], dp[mask][i] + g[i][j]);
+                }
+            }
+        }
+    }
+}
+===============================================================================
