@@ -21,3 +21,6 @@ Ceil de a/b: (a + b - 1) / b
 
 // MDC de a,b = MDC de a-b, b
 gcd(a,b) = gcd(a-b,b)
+
+//Eval (calcula a expressao aritimetica em python)
+eval(expressao)
