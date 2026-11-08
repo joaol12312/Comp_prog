@@ -17,19 +17,32 @@ long long fexp(long long a, long long b, long long mod) {
 }
 ===============================================================================
 -------------------------------------------------------------------------------
-47. MODELO: EXPONENCIAÇÃO RÁPIDA DE MATRIZES (Matrix Exponentiation)
+47. MODELO: EXPONENCIAÇÃO RÁPIDA DE MATRIZES (Matrix Exponentiation via Vector)
 -------------------------------------------------------------------------------
-// Eleva uma matriz quadrada 'base' de tamanho N ao expoente 'exp' módulo MOD.
-// Utilizada para resolver recorrências lineares e contagem de caminhos em O(N^3 * log exp).
+// Eleva uma matriz quadrada N x N ao expoente 'exp' módulo MOD em O(N^3 * log exp).
+// Constrói a matriz Identidade dinamicamente com base nas dimensões da matriz base.
 // Complexidade de Tempo: O(N^3 * log exp) | Espaço: O(N^2)
 
+// Retorna a matriz Identidade N x N (1s na diagonal principal, 0s no restante)
+Matrix matriz_identidade(int n) {
+    Matrix I(n, vector<long long>(n, 0));
+    for (int i = 0; i < n; i++) {
+        I[i][i] = 1;
+    }
+    return I;
+}
+
+// Eleva a matriz 'base' ao expoente 'exp'
 Matrix matrix_fexp(Matrix base, long long exp) {
-    Matrix ans = Matrix::identity(base.size);
+    int n = base.size();
+    Matrix ans = matriz_identidade(n);
+
     while (exp > 0) {
-        if (exp & 1) ans = ans * base;
-        base = base * base;
+        if (exp & 1) ans = multiplica(ans, base);
+        base = multiplica(base, base);
         exp >>= 1;
     }
+
     return ans;
 }
 ===============================================================================
