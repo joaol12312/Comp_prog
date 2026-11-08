@@ -17,32 +17,36 @@ long long fexp(long long a, long long b, long long mod) {
 }
 ===============================================================================
 -------------------------------------------------------------------------------
-47. MODELO: EXPONENCIAÇÃO RÁPIDA DE MATRIZES (Matrix Exponentiation via Vector)
+47. MODELO: EXPONENCIAÇÃO RÁPIDA DE MATRIZES (Matrix Fast Exponentiation)
 -------------------------------------------------------------------------------
 // Eleva uma matriz quadrada N x N ao expoente 'exp' módulo MOD em O(N^3 * log exp).
-// Constrói a matriz Identidade dinamicamente com base nas dimensões da matriz base.
+// Constrói a Matriz Identidade 'ret' e acumula as potências sucessivas de 'T' (T^1, T^2, T^4...).
 // Complexidade de Tempo: O(N^3 * log exp) | Espaço: O(N^2)
 
-// Retorna a matriz Identidade N x N (1s na diagonal principal, 0s no restante)
-Matrix matriz_identidade(int n) {
-    Matrix I(n, vector<long long>(n, 0));
+typedef vector<vector<long long>> Matrix;
+
+Matrix fexp_matrix(Matrix T, long long exp) {
+    int n = T.size();
+    Matrix ret(n, vector<long long>(n, 0));
+    
+    // Transforma a matriz de retorno (ret) na Matriz Identidade (o "1" das matrizes)
     for (int i = 0; i < n; i++) {
-        I[i][i] = 1;
+        ret[i][i] = 1;
     }
-    return I;
-}
 
-// Eleva a matriz 'base' ao expoente 'exp'
-Matrix matrix_fexp(Matrix base, long long exp) {
-    int n = base.size();
-    Matrix ans = matriz_identidade(n);
+    Matrix pot = T; // Começa como T^1
 
+    // Laço da exponenciação bit a bit
     while (exp > 0) {
-        if (exp & 1) ans = multiplica(ans, base);
-        base = multiplica(base, base);
-        exp >>= 1;
+        if (exp % 2 == 1) { // Se o bit está aceso, multiplica na resposta final
+            ret = multiplica(ret, pot);
+        }
+        // Dobra a potência da matriz (T^1 vira T^2, T^2 vira T^4...)
+        pot = multiplica(pot, pot);
+        exp /= 2; // Passa para o próximo bit
     }
 
-    return ans;
+    return ret;
 }
+===============================================================================
 ===============================================================================
