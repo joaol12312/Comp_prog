@@ -1,0 +1,36 @@
+-------------------------------------------------------------------------------
+46. MODELO: ESTRUTURA E MULTIPLICAÇÃO DE MATRIZES (Matrix Multiplication)
+-------------------------------------------------------------------------------
+// Estrutura genérica de Matriz N x N com sobrecarga do operador de multiplicação (*).
+// Realiza a multiplicação de duas matrizes quadradas módulo MOD.
+// Complexidade de Tempo: O(N^3) | Espaço: O(N^2)
+
+const long long MOD = 1e9 + 7;
+
+struct Matrix {
+    int size;
+    vector<vector<long long>> mat;
+
+    Matrix(int n) : size(n), mat(n, vector<long long>(n, 0)) {}
+
+    // Matriz Identidade N x N (1s na diagonal principal, 0s no restante)
+    static Matrix identity(int n) {
+        Matrix res(n);
+        for (int i = 0; i < n; i++) res.mat[i][i] = 1;
+        return res;
+    }
+
+    // Sobrecarga do operador de multiplicação A * B
+    Matrix operator*(const Matrix& other) const {
+        Matrix res(size);
+        for (int i = 0; i < size; i++) {
+            for (int k = 0; k < size; k++) {
+                for (int j = 0; j < size; j++) {
+                    res.mat[i][j] = (res.mat[i][j] + mat[i][k] * other.mat[k][j]) % MOD;
+                }
+            }
+        }
+        return res;
+    }
+};
+===============================================================================

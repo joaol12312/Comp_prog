@@ -1,0 +1,35 @@
+-------------------------------------------------------------------------------
+45. MODELO: EXPONENCIAÇÃO RÁPIDA MODULAR (Binary Exponentiation)
+-------------------------------------------------------------------------------
+// Calcula (a^b) % MOD em O(log b) utilizando manipulação de bits.
+// Requer base 'a' e expoente 'b' não-negativo (b >= 0).
+// Complexidade de Tempo: O(log b) | Espaço: O(1)
+
+long long fexp(long long a, long long b, long long mod) {
+    long long ans = 1;
+    a %= mod;
+    while (b > 0) {
+        if (b & 1) ans = (ans * a) % mod; // Multiplica se o bit atual estiver aceso
+        a = (a * a) % mod;               // Eleva a base ao quadrado
+        b >>= 1;                         // Desloca o expoente 1 bit à direita
+    }
+    return ans;
+}
+===============================================================================
+-------------------------------------------------------------------------------
+47. MODELO: EXPONENCIAÇÃO RÁPIDA DE MATRIZES (Matrix Exponentiation)
+-------------------------------------------------------------------------------
+// Eleva uma matriz quadrada 'base' de tamanho N ao expoente 'exp' módulo MOD.
+// Utilizada para resolver recorrências lineares e contagem de caminhos em O(N^3 * log exp).
+// Complexidade de Tempo: O(N^3 * log exp) | Espaço: O(N^2)
+
+Matrix matrix_fexp(Matrix base, long long exp) {
+    Matrix ans = Matrix::identity(base.size);
+    while (exp > 0) {
+        if (exp & 1) ans = ans * base;
+        base = base * base;
+        exp >>= 1;
+    }
+    return ans;
+}
+===============================================================================
