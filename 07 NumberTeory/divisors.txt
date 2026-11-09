@@ -1,0 +1,48 @@
+-------------------------------------------------------------------------------
+54. MODELO: CONTAGEM DE DIVISORES DIRETA (Trial Division O(sqrt(N)))
+-------------------------------------------------------------------------------
+// Conta a quantidade total de divisores de N testando os pares (i, N/i).
+// Indicado para consultas individuais diretas com N <= 10^12.
+// Complexidade de Tempo: O(sqrt(N)) | Espaço: O(1)
+
+long long count_divisors(long long n) {
+    long long count = 0;
+    for (long long i = 1; i * i <= n; i++) {
+        if (n % i == 0) {
+            count++; // Divisor 'i'
+            if (i * i != n) {
+                count++; // Divisor par 'n / i'
+            }
+        }
+    }
+    return count;
+}
+===============================================================================
+
+-------------------------------------------------------------------------------
+55. MODELO: CONTAGEM DE DIVISORES VIA FATORAÇÃO DE PRIMOS
+-------------------------------------------------------------------------------
+// Utiliza a propriedade d(N) = (a1 + 1) * (a2 + 1) * ... * (ak + 1), onde ai
+// é o expoente do i-ésimo fator primo na decomposição em primos de N.
+// Requer o vetor de primos pré-computado até sqrt(N) (Modelo 48 ou 50).
+// Complexidade de Tempo: O(sqrt(N) / log sqrt(N)) por consulta | Espaço: O(1)
+
+long long count_divisors_prime(long long n, const vector<long long>& primos) {
+    long long ans = 1;
+    for (long long p : primos) {
+        if (p * p > n) break;
+        if (n % p == 0) {
+            long long exponent = 0;
+            while (n % p == 0) {
+                exponent++;
+                n /= p;
+            }
+            ans *= (exponent + 1);
+        }
+    }
+    if (n > 1) {
+        ans *= 2; // O fator primo restante > sqrt(N) tem expoente 1 -> (1 + 1) = 2
+    }
+    return ans;
+}
+===============================================================================
