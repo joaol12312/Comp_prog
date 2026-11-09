@@ -1,0 +1,46 @@
+-------------------------------------------------------------------------------
+52. MODELO: TESTE DE PRIMALIDADE O(sqrt(N)) (Trial Division 6k ± 1)
+-------------------------------------------------------------------------------
+// Checa se N é primo dividindo por fatores primos potenciais da forma (6k ± 1).
+// Indicado para checagens diretas com N <= 10^12.
+// Complexidade de Tempo: O(sqrt(N)) | Espaço: O(1)
+
+bool is_prime(long long n) {
+    if (n < 2) return false;
+    if (n == 2 || n == 3) return true;
+    if (n % 2 == 0 || n % 3 == 0) return false;
+    
+    // Testa apenas números que não são múltiplos de 2 ou 3 (6k ± 1)
+    for (long long i = 5; i * i <= n; i += 6) {
+        if (n % i == 0 || n % (i + 2) == 0) return false;
+    }
+    return true;
+}
+===============================================================================
+-------------------------------------------------------------------------------
+56. MODELO: PRÉ-COMPUTAÇÃO DE PRIMOS ATÉ SQRT(10^12) (Crivo 10^6)
+-------------------------------------------------------------------------------
+// Pré-computa todos os números primos até 10^6 (LIM = sqrt(10^12)) usando o
+// Crivo de Eratóstenes. Popula a tabela booleana e a lista 'primos_small'.
+// Complexidade de Tempo: O(LIM log(log LIM)) | Espaço: O(LIM) (~1 MB de RAM)
+
+const int LIM = 1e6; // sqrt(10^12) = 10^6
+vector<bool> is_prime_small(LIM + 1, true);
+vector<long long> primos_small;
+
+void sieve_sqrt() {
+    is_prime_small[0] = is_prime_small[1] = false;
+    
+    for (int p = 2; p * p <= LIM; p++) {
+        if (is_prime_small[p]) {
+            for (int i = p * p; i <= LIM; i += p) {
+                is_prime_small[i] = false;
+            }
+        }
+    }
+    
+    for (int p = 2; p <= LIM; p++) {
+        if (is_prime_small[p]) primos_small.push_back(p);
+    }
+}
+===============================================================================
