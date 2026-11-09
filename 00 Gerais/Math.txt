@@ -31,6 +31,20 @@ a^p = a (mod p)
 a^p-1 = 1 (mod p)
 a^p-2 = a^-1 (mod p)
 
-//Aranjos
-n!/(n!-p!) \\ sem rep
-n^p \\ com rep
+// Combinação Simples (sem repetição)
+n! / (k! * (n - k)!)
+
+// Combinação com Repetição
+(n + k - 1)! / (k! * (n - 1)!)
+
+// Arranjo Simples (sem repetição)
+n! / (n - k)!
+
+// Arranjo com Repetição
+n^k
+
+// Permutação Simples
+n!
+
+// Permutação com Repetição
+n! / (a! * b! * ...)
