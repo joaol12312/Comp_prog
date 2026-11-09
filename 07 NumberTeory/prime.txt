@@ -44,3 +44,25 @@ void sieve_sqrt() {
     }
 }
 ===============================================================================
+-------------------------------------------------------------------------------
+58. MODELO: INVERSO MODULAR VIA FERMAT (MOD Primo)
+-------------------------------------------------------------------------------
+// Calcula a^(-1) % MOD utilizando o Pequeno Teorema de Fermat: a^(MOD - 2) ≡ a^(-1) (mod MOD).
+// REQUISITO: O valor de MOD DEVE ser um número primo.
+// Complexidade de Tempo: O(log MOD) | Espaço: O(1)
+
+long long fexp(long long a, long long b, long long mod) {
+    long long ans = 1;
+    a %= mod;
+    while (b > 0) {
+        if (b & 1) ans = (ans * a) % mod;
+        a = (a * a) % mod;
+        b >>= 1;
+    }
+    return ans;
+}
+
+long long modInverseFermat(long long a, long long mod) {
+    return fexp(a, mod - 2, mod);
+}
+===============================================================================
