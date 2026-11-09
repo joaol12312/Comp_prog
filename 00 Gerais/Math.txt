@@ -25,8 +25,12 @@ gcd(a,b) = gcd(a-b,b)
 //Eval (calcula a expressao aritimetica em python)
 eval(expressao)
 
-//teorema de fermat
+//Teorema de Fermat
 se p for primo
 a^p = a (mod p)
 a^p-1 = 1 (mod p)
 a^p-2 = a^-1 (mod p)
+
+//Aranjos
+n!/(n!-p!) \\ sem rep
+n^p \\ com rep
