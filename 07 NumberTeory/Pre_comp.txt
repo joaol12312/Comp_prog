@@ -1,0 +1,18 @@
+-------------------------------------------------------------------------------
+57. MODELO: PRÉ-COMPUTAÇÃO DE FATORIAL MODULAR
+-------------------------------------------------------------------------------
+// Pré-computa os fatoriais de 0 até MAXN módulo MOD em O(N).
+// Complexidade de Tempo: O(N) no pré-processamento | O(1) por consulta | Espaço: O(N)
+
+const int MAXN = 1e6 + 5;
+const long long MOD = 1e9 + 7;
+
+long long fact[MAXN];
+
+void build_factorials(int n = MAXN - 1) {
+    fact[0] = 1;
+    for (int i = 1; i <= n; i++) {
+        fact[i] = (fact[i - 1] * i) % MOD;
+    }
+}
+===============================================================================
