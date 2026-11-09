@@ -61,6 +61,10 @@ long long fexp(long long a, long long b, long long mod) {
     }
     return ans;
 }
+long long modInverseFermat(long long a, long long mod) {
+    return fexp(a, mod - 2, mod);
+}
+===============================================================================
 -------------------------------------------------------------------------------
 61. MODELO: FATORAÇÃO EM PRIMOS DIRETA (Trial Division O(sqrt(N)))
 -------------------------------------------------------------------------------
@@ -91,7 +95,4 @@ vector<pair<long long, int>> factorize(long long n) {
     return fatores;
 }
 ===============================================================================
-long long modInverseFermat(long long a, long long mod) {
-    return fexp(a, mod - 2, mod);
-}
-===============================================================================
+
