@@ -61,7 +61,36 @@ long long fexp(long long a, long long b, long long mod) {
     }
     return ans;
 }
+-------------------------------------------------------------------------------
+61. MODELO: FATORAÇÃO EM PRIMOS DIRETA (Trial Division O(sqrt(N)))
+-------------------------------------------------------------------------------
+// Decompõe um inteiro N em seus fatores primos e respectivos expoentes.
+// Retorna um vector de pares {primo, expoente}.
+// Indicado para consultas individuais diretas onde N <= 10^12.
+// Complexidade de Tempo: O(sqrt(N)) | Espaço: O(log N)
 
+vector<pair<long long, int>> factorize(long long n) {
+    vector<pair<long long, int>> fatores;
+    
+    for (long long d = 2; d * d <= n; d++) {
+        if (n % d == 0) {
+            int count = 0;
+            while (n % d == 0) {
+                count++;
+                n /= d;
+            }
+            fatores.push_back({d, count});
+        }
+    }
+    
+    // Se sobrou um valor > 1, ele é o último fator primo
+    if (n > 1) {
+        fatores.push_back({n, 1});
+    }
+    
+    return fatores;
+}
+===============================================================================
 long long modInverseFermat(long long a, long long mod) {
     return fexp(a, mod - 2, mod);
 }
