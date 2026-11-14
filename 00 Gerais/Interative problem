@@ -1,1 +1,6 @@
-
+//modelo
+int ask(int x){
+   cout << "? " << x << endl;
+  int resp; cin >> resp;
+  return resp;
+}
