@@ -1,0 +1,51 @@
+-------------------------------------------------------------------------------
+MODELO: DIVISÃO E CONQUISTA NAS QUERIES (Offline Range Queries / RMQ)
+-------------------------------------------------------------------------------
+// Responde Q consultas de intervalo [l, r] offline (0-indexed) dividindo o
+// vetor ao meio e combinando sufixos de [l..m] com prefixos de [m..r] em O(1).
+// Complexidade de Tempo: O((N + Q) log N) | Espaço: O(N + Q)
+
+struct Query {
+    int l, r, idx;
+};
+
+// Função recursiva que particiona as queries em torno do meio 'm'
+void dnc_queries(int l, int r, const vector<Query>& queries,
+                 const vector<long long>& a, vector<long long>& ans) {
+    if (l > r || queries.empty()) return;
+    int m = l + (r - l) / 2;
+
+    vector<Query> left, right, cur;
+    for (const Query& qr : queries) {
+        if (qr.l <= m && m <= qr.r) cur.push_back(qr);
+        else if (qr.r < m) left.push_back(qr);
+        else right.push_back(qr);
+    }
+
+    dnc_queries(l, m - 1, left, a, ans);
+    dnc_queries(m + 1, r, right, a, ans);
+
+    // Pré-calcula o sufixo acumulado [i..m] e o prefixo acumulado [m..i]
+    vector<long long> suf = {a[m]}, pref = {a[m]};
+    for (int i = m - 1; i >= l; i--) {
+        suf.push_back(min(a[i], suf.back()));
+    }
+    for (int i = m + 1; i <= r; i++) {
+        pref.push_back(min(a[i], pref.back()));
+    }
+
+    // Responde todas as queries que cruzam o ponto médio 'm' em O(1)
+    for (const Query& qr : cur) {
+        ans[qr.idx] = min(suf[m - qr.l], pref[qr.r - m]);
+    }
+}
+
+// Recebe o vetor 'a' (0-indexed) e a lista de queries, retornando o vetor de respostas
+vector<long long> solve_dnc_queries(const vector<long long>& a, const vector<Query>& queries) {
+    vector<long long> ans(queries.size());
+    if (!a.empty() && !queries.empty()) {
+        dnc_queries(0, (int)a.size() - 1, queries, a, ans);
+    }
+    return ans;
+}
+===============================================================================
