@@ -1,0 +1,40 @@
+-------------------------------------------------------------------------------
+MODELO: CONTAGEM DE INVERSÕES COM MERGE SORT (Inversion Count)
+-------------------------------------------------------------------------------
+// Conta a quantidade de pares (i, j) tais que i < j e v[i] > v[j] usando
+// Divisão e Conquista + Dois Ponteiros (também ordena o vetor no processo).
+// Complexidade de Tempo: O(N log N) | Espaço: O(N)
+
+// Função recursiva interna que ordena o intervalo [l, r] e retorna as inversões
+long long merge_sort_inv(vector<long long>& a, int l, int r) {
+    if (l >= r) return 0;
+    int m = l + (r - l) / 2;
+
+    long long inv = 0;
+    inv += merge_sort_inv(a, l, m);
+    inv += merge_sort_inv(a, m + 1, r);
+
+    // Os intervalos [l, m] e [m + 1, r] já estão ordenados
+    vector<long long> left(a.begin() + l, a.begin() + m + 1);
+    vector<long long> right(a.begin() + m + 1, a.begin() + r + 1);
+
+    // Dois ponteiros: conta quantos elementos em 'right' são menores que 'x'
+    int R = 0;
+    for (long long x : left) {
+        while (R < (int)right.size() && right[R] < x) {
+            R++;
+        }
+        inv += R;
+    }
+
+    // Intercala (merge) as duas metades ordenadas de volta em a[l..r]
+    merge(left.begin(), left.end(), right.begin(), right.end(), a.begin() + l);
+    return inv;
+}
+
+// Retorna o total de inversões do vetor 'v' (passado por valor para não alterar o original)
+long long count_inversions(vector<long long> v) {
+    if (v.empty()) return 0;
+    return merge_sort_inv(v, 0, (int)v.size() - 1);
+}
+===============================================================================
