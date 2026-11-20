@@ -1,0 +1,62 @@
+-------------------------------------------------------------------------------
+65. MODELO: CONTAGEM DE ELEMENTOS MAIORES À ESQUERDA E À DIREITA (SegTree)
+-------------------------------------------------------------------------------
+// Conta, para cada posição 'i', quantos elementos estritamente maiores existem
+// à sua esquerda (maiores_esq[i]) e à sua direita (maiores_dir[i]).
+// Utiliza Compressão de Coordenadas para suportar valores até 10^9 (ou negativos).
+// Complexidade de Tempo: O(N log N) | Espaço: O(4 * N)
+
+const int MAXN = 1e6 + 5;
+int n;
+int seg[4 * MAXN];
+
+// Adiciona 'val' na frequência da posição comprimida 'i'
+void update(int i, int val, int l = 0, int r = n - 1, int idx = 0) {
+    if (l == r) {
+        seg[idx] += val;
+        return;
+    }
+    int mid = (l + r) / 2;
+    if (i <= mid) update(i, val, l, mid, 2 * idx + 1);
+    else          update(i, val, mid + 1, r, 2 * idx + 2);
+    seg[idx] = seg[2 * idx + 1] + seg[2 * idx + 2];
+}
+
+// Retorna a quantidade de elementos no intervalo comprimido [L, R]
+int query(int L, int R, int l = 0, int r = n - 1, int idx = 0) {
+    if (L > R || R < l || L > r) return 0; // Protege intervalos vazios nas pontas
+    if (L <= l && r <= R) return seg[idx];
+    int mid = (l + r) / 2;
+    return query(L, R, l, mid, 2 * idx + 1) + query(L, R, mid + 1, r, 2 * idx + 2);
+}
+
+void contar_maiores(vector<int>& a, vector<ll>& maiores_esq, vector<ll>& maiores_dir) {
+    n = a.size();
+    maiores_esq.assign(n, 0);
+    maiores_dir.assign(n, 0);
+
+    // 1. Compressão de coordenadas (mapeia valores distintos para 0 .. m-1)
+    vector<int> vals = a;
+    sort(vals.begin(), vals.end());
+    vals.erase(unique(vals.begin(), vals.end()), vals.end());
+    int m = vals.size();
+
+    for (int i = 0; i < n; i++) {
+        a[i] = lower_bound(vals.begin(), vals.end(), a[i]) - vals.begin();
+    }
+
+    // 2. Passada da esquerda para a direita: conta maiores à esquerda
+    memset(seg, 0, sizeof(int) * 4 * n);
+    for (int i = 0; i < n; i++) {
+        maiores_esq[i] = query(a[i] + 1, m - 1);
+        update(a[i], 1);
+    }
+
+    // 3. Limpa a árvore e passa da direita para a esquerda: conta maiores à direita
+    memset(seg, 0, sizeof(int) * 4 * n);
+    for (int i = n - 1; i >= 0; i--) {
+        maiores_dir[i] = query(a[i] + 1, m - 1);
+        update(a[i], 1);
+    }
+}
+===============================================================================
