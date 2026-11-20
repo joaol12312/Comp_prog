@@ -1,0 +1,56 @@
+-------------------------------------------------------------------------------
+66. MODELO: SEGMENT TREE - BUSCA E REMOÇÃO DO K-ÉSIMO ELEMENTO (Walk on SegTree)
+-------------------------------------------------------------------------------
+// Mantém a contagem de elementos ativos/disponíveis em cada intervalo.
+// Permite encontrar o k-ésimo elemento ativo (1-indexed), removê-lo da estrutura
+// e retornar seu índice original (0-indexed) em O(log N) sem busca binária extra.
+// Complexidade de Tempo: Build O(N) | Query & Remove O(log N) | Espaço: O(4 * N)
+
+const int MAXN = 2e5 + 5;
+int n;
+int seg[4 * MAXN];
+
+int join(int a, int b) {
+    return a + b;
+}
+
+// Inicializa todas as posições de 0 até n-1 como ativas (valor 1)
+void build(int l = 0, int r = n - 1, int idx = 0) {
+    if (l == r) {
+        seg[idx] = 1;
+        return;
+    }
+    int mid = (l + r) / 2;
+    build(l, mid, 2 * idx + 1);
+    build(mid + 1, r, 2 * idx + 2);
+    seg[idx] = join(seg[2 * idx + 1], seg[2 * idx + 2]);
+}
+
+// Busca o k-ésimo elemento disponível (k >= 1), marca como removido (0)
+// e retorna a posição original (0-indexed) no array
+int query_and_remove(int k, int l = 0, int r = n - 1, int idx = 0) {
+    if (l == r) {
+        seg[idx] = 0;
+        return l;
+    }
+    int mid = (l + r) / 2;
+    int esq = seg[2 * idx + 1];
+    int chosen;
+
+    if (esq >= k) {
+        chosen = query_and_remove(k, l, mid, 2 * idx + 1);
+    } else {
+        chosen = query_and_remove(k - esq, mid + 1, r, 2 * idx + 2);
+    }
+
+    seg[idx] = join(seg[2 * idx + 1], seg[2 * idx + 2]);
+    return chosen;
+}
+
+/* Exemplo de uso:
+   build();
+   int pos = query_and_remove(k); // pos está em [0, n-1]
+   // Para imprimir a posição 1-indexed: pos + 1
+   // Para acessar o valor original: a[pos]
+*/
+===============================================================================
