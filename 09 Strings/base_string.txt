@@ -1,0 +1,41 @@
+-------------------------------------------------------------------------------
+68. MODELO: STRING HASHING (Rolling Hash Genérico - 1 Base)
+-------------------------------------------------------------------------------
+// Calcula o hash de substrings em O(1) após pré-processamento em O(N).
+// Útil para comparar substrings, buscar padrões (Rabin-Karp) e palíndromos.
+// Para evitar colisões em competições grandes, use duplo hash (2 bases/mods).
+// Complexidade de Tempo: Build O(N) | Query O(1) | Espaço: O(N)
+
+const ll MOD = 1e9 + 9;
+const ll BASE = 313; 
+const int MAXN = 1e6 + 5;
+
+vector<ll> power_base;
+
+// 1. Pré-computa as potências da base (Chamar uma única vez na main)
+void precompute_powers(int n = MAXN - 1) {
+    power_base.assign(n + 1, 1);
+    for (int i = 0; i < n; i++) {
+        power_base[i + 1] = (power_base[i] * BASE) % MOD;
+    }
+}
+
+struct StringHash {
+    vector<ll> h;
+    
+    // Constrói o array de prefix hashes da string O(N)
+    StringHash(const string& s) {
+        int n = s.size();
+        h.assign(n + 1, 0);
+        for (int i = 0; i < n; i++) {
+            h[i + 1] = (h[i] * BASE + s[i]) % MOD;
+        }
+    }
+    
+    // Retorna o hash da substring s[l...r] (0-indexed) em O(1)
+    ll get_hash(int l, int r) {
+        ll hash_val = (h[r + 1] - (h[l] * power_base[r - l + 1]) % MOD + MOD) % MOD;
+        return hash_val;
+    }
+};
+===============================================================================
