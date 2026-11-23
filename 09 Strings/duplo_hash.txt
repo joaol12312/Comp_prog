@@ -1,21 +1,17 @@
 -------------------------------------------------------------------------------
-69. MODELO: STRING HASHING (Duplo Hash Empacotado em 64 bits - Anti-Colisão)
+69. MODELO: STRING HASHING (Duplo Hash - Prevenção de Colisões)
 -------------------------------------------------------------------------------
-// Calcula o duplo hash de substrings em O(1) após pré-processamento em O(N).
-// Combina dois hashes (MOD1, MOD2) em um único inteiro 'ull' de 64 bits
-// (bit packing) e sorteia bases ímpares aleatórias para evitar hacks/colisões.
+// Calcula o hash de substrings em O(1) usando duas bases e dois módulos distintos.
+// Retorna um pair<ll, ll>. A chance de duas strings diferentes colidirem
+// em ambos os hashes simultaneamente é praticamente zero.
+// Ideal para usar com map<pair<ll,ll>, int> em problemas de contagem/frequência.
 // Complexidade de Tempo: Build O(N) | Query O(1) | Espaço: O(N)
-
-using ull = unsigned long long;
 
 const ll MOD1 = 1e9 + 7;
 const ll MOD2 = 1e9 + 9;
+const ll B1 = 313;
+const ll B2 = 317;
 const int MAXN = 1e6 + 5;
-
-// Sorteia bases ímpares distintas em tempo de execução (proteção contra anti-hash)
-mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
-const ll B1 = uniform_int_distribution<ll>(300, 5e7)(rng) | 1;
-const ll B2 = uniform_int_distribution<ll>(5e7 + 1, 1e8)(rng) | 1;
 
 vector<ll> pot1, pot2;
 
@@ -31,8 +27,8 @@ void precompute_powers(int n = MAXN - 1) {
 
 struct DoubleHash {
     vector<ll> h1, h2;
-
-    // Constrói os arrays de prefix hashes em O(N)
+    
+    // Constrói os dois arrays de prefix hashes O(N)
     DoubleHash(const string& s) {
         int n = s.size();
         h1.assign(n + 1, 0);
@@ -42,23 +38,13 @@ struct DoubleHash {
             h2[i + 1] = (h2[i] * B2 + s[i]) % MOD2;
         }
     }
-
-    // Retorna o duplo hash da substring [l, r) ('l' incluso, 'r' excluso) em O(1)
+    
+    // Retorna o duplo hash da substring [l, r) -> 'l' incluso, 'r' excluso
     // Para a string inteira, chame get_hash(0, n)
-    ull get_hash(int l, int r) const {
+    pair<ll, ll> get_hash(int l, int r) {
         ll val1 = (h1[r] - (h1[l] * pot1[r - l]) % MOD1 + MOD1) % MOD1;
         ll val2 = (h2[r] - (h2[l] * pot2[r - l]) % MOD2 + MOD2) % MOD2;
-        return (ull(val1) << 32) | ull(val2);
-    }
-
-    // Calcula o hash da string inteira em O(|s|) sem alocar vetores (ideal para queries)
-    static ull hash_full(const string& s) {
-        ll val1 = 0, val2 = 0;
-        for (char c : s) {
-            val1 = (val1 * B1 + c) % MOD1;
-            val2 = (val2 * B2 + c) % MOD2;
-        }
-        return (ull(val1) << 32) | ull(val2);
+        return {val1, val2};
     }
 };
 ===============================================================================
