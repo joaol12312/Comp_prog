@@ -1,0 +1,44 @@
+-------------------------------------------------------------------------------
+MODELO: TRIE BINÁRIA (Maximum XOR Pair / Subarray - STRUCT)
+-------------------------------------------------------------------------------
+// Árvore de prefixos binária para inserção e consulta de XOR máximo em O(MAX_BIT).
+// Use MAX_BIT = 29 para int (até 10^9) ou MAX_BIT = 60 para long long (até 10^18).
+// Complexidade de Tempo: O(MAX_BIT) por operação | Espaço: O(N * MAX_BIT)
+
+struct BinaryTrie {
+    vector<array<int, 2>> trie;
+    int MAX_BIT;
+
+    BinaryTrie(int max_bit = 29) : MAX_BIT(max_bit) {
+        trie.push_back({-1, -1}); // Raiz no índice 0
+    }
+
+    void insert(long long x) {
+        int curr = 0;
+        for (int bit = MAX_BIT; bit >= 0; bit--) {
+            int b = (x >> bit) & 1LL;
+            if (trie[curr][b] == -1) {
+                trie[curr][b] = trie.size();
+                trie.push_back({-1, -1});
+            }
+            curr = trie[curr][b];
+        }
+    }
+
+    long long get_max_xor(long long x) {
+        int curr = 0;
+        long long ans = 0;
+        for (int bit = MAX_BIT; bit >= 0; bit--) {
+            int b = (x >> bit) & 1LL;
+            if (trie[curr][1 - b] != -1) {
+                ans |= (1LL << bit);
+                curr = trie[curr][1 - b];
+            } else {
+                if (trie[curr][b] == -1) break;
+                curr = trie[curr][b];
+            }
+        }
+        return ans;
+    }
+};
+===============================================================================
