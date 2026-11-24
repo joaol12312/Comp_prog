@@ -48,3 +48,55 @@ struct DoubleHash {
     }
 };
 ===============================================================================
+-------------------------------------------------------------------------------
+70. MODELO: VECTOR HASHING (Duplo Hash para Números - Prevenção de Colisões)
+-------------------------------------------------------------------------------
+// Calcula o hash de subvetores numéricos em O(1) usando duas bases e dois módulos.
+// Aceita vector<int> e vector<ll>, incluindo números negativos e grandes (até 10^18).
+// Retorna um pair<ll, ll>. Ideal para comparar subarrays ou usar com map<pair<ll,ll>, int>.
+// Complexidade de Tempo: Build O(N) | Query O(1) | Espaço: O(N)
+
+const ll MOD1 = 1e9 + 7;
+const ll MOD2 = 1e9 + 9;
+const ll B1 = 911382323;
+const ll B2 = 972663749;
+const int MAXN = 1e6 + 5;
+
+vector<ll> pot1, pot2;
+
+// 1. Pré-computa as potências das duas bases (Chamar UMA VEZ na main)
+void precompute_powers(int n = MAXN - 1) {
+    pot1.assign(n + 1, 1);
+    pot2.assign(n + 1, 1);
+    for (int i = 0; i < n; i++) {
+        pot1[i + 1] = (pot1[i] * B1) % MOD1;
+        pot2[i + 1] = (pot2[i] * B2) % MOD2;
+    }
+}
+
+struct DoubleHashVec {
+    vector<ll> h1, h2;
+
+    // Constrói os dois arrays de prefix hashes O(N) (aceita vector<int> ou vector<ll>)
+    template<typename T>
+    DoubleHashVec(const vector<T>& v) {
+        int n = v.size();
+        h1.assign(n + 1, 0);
+        h2.assign(n + 1, 0);
+        for (int i = 0; i < n; i++) {
+            ll v1 = ((ll)v[i] % MOD1 + MOD1) % MOD1; // Normaliza negativos e grandes
+            ll v2 = ((ll)v[i] % MOD2 + MOD2) % MOD2;
+            h1[i + 1] = (h1[i] * B1 + v1) % MOD1;
+            h2[i + 1] = (h2[i] * B2 + v2) % MOD2;
+        }
+    }
+
+    // Retorna o duplo hash do subvetor [l, r) -> 'l' incluso, 'r' excluso
+    // Para o vetor inteiro, chame get_hash(0, n)
+    pair<ll, ll> get_hash(int l, int r) {
+        ll val1 = (h1[r] - (h1[l] * pot1[r - l]) % MOD1 + MOD1) % MOD1;
+        ll val2 = (h2[r] - (h2[l] * pot2[r - l]) % MOD2 + MOD2) % MOD2;
+        return {val1, val2};
+    }
+};
+===============================================================================
