@@ -1,0 +1,106 @@
+-------------------------------------------------------------------------------
+MODELO: TRIE BINÁRIA (Maximum XOR Pair / Subarray - STRUCT)
+-------------------------------------------------------------------------------
+// Árvore de prefixos binária para inserção e consulta de XOR máximo em O(MAX_BIT).
+// Use MAX_BIT = 29 para int (até 10^9) ou MAX_BIT = 60 para long long (até 10^18).
+// Complexidade de Tempo: O(MAX_BIT) por operação | Espaço: O(N * MAX_BIT)
+
+struct BinaryTrie {
+    vector<array<int, 2>> trie;
+    int MAX_BIT;
+
+    BinaryTrie(int max_bit = 29) : MAX_BIT(max_bit) {
+        trie.push_back({-1, -1}); // Raiz no índice 0
+    }
+
+    void insert(long long x) {
+        int curr = 0;
+        for (int bit = MAX_BIT; bit >= 0; bit--) {
+            int b = (x >> bit) & 1LL;
+            if (trie[curr][b] == -1) {
+                trie[curr][b] = trie.size();
+                trie.push_back({-1, -1});
+            }
+            curr = trie[curr][b];
+        }
+    }
+
+    long long get_max_xor(long long x) {
+        int curr = 0;
+        long long ans = 0;
+        for (int bit = MAX_BIT; bit >= 0; bit--) {
+            int b = (x >> bit) & 1LL;
+            if (trie[curr][1 - b] != -1) {
+                ans |= (1LL << bit);
+                curr = trie[curr][1 - b];
+            } else {
+                if (trie[curr][b] == -1) break;
+                curr = trie[curr][b];
+            }
+        }
+        return ans;
+    }
+};
+===============================================================================
+-------------------------------------------------------------------------------
+70. MODELO: TRIE DE PALAVRAS (Árvore de Prefixos Estática)
+-------------------------------------------------------------------------------
+// Insere palavras e consulta frequência exata ou contagem de prefixos em O(|S|).
+// Implementação estática (matriz fixa) para evitar alocação dinâmica (new/malloc)
+// e garantir tempo de execução mínimo sem chance de colisão.
+// Complexidade de Tempo: Insert O(|S|) | Query O(|S|) | Espaço: O(MAX_NOS * 26)
+
+const int MAX_NOS = 1e6 + 5; // Soma total dos caracteres de todas as strings
+const int ALFA = 26;         // Tamanho do alfabeto ('a'..'z')
+
+int trie[MAX_NOS][ALFA];
+int pass_cnt[MAX_NOS]; // Quantas palavras passam por este nó (prefixos)
+int end_cnt[MAX_NOS];  // Quantas palavras terminam exatamente neste nó
+int nos = 1;           // Raiz é o nó 0; próximo nó livre começa em 1
+
+// Limpa apenas os nós utilizados (seguro para múltiplos casos de teste t > 1)
+void init_trie() {
+    for (int i = 0; i < nos; i++) {
+        memset(trie[i], 0, sizeof(trie[i]));
+        pass_cnt[i] = 0;
+        end_cnt[i] = 0;
+    }
+    nos = 1;
+}
+
+// Insere uma palavra na Trie em O(|s|)
+void insert_word(const string& s) {
+    int u = 0;
+    for (char ch : s) {
+        int c = ch - 'a';
+        if (!trie[u][c]) {
+            trie[u][c] = nos++;
+        }
+        u = trie[u][c];
+        pass_cnt[u]++;
+    }
+    end_cnt[u]++;
+}
+
+// Retorna quantas palavras inseridas têm 'p' como prefixo em O(|p|)
+int count_prefix(const string& p) {
+    int u = 0;
+    for (char ch : p) {
+        int c = ch - 'a';
+        if (!trie[u][c]) return 0;
+        u = trie[u][c];
+    }
+    return pass_cnt[u];
+}
+
+// Retorna quantas vezes a palavra exata 's' foi inserida em O(|s|)
+int count_word(const string& s) {
+    int u = 0;
+    for (char ch : s) {
+        int c = ch - 'a';
+        if (!trie[u][c]) return 0;
+        u = trie[u][c];
+    }
+    return end_cnt[u];
+}
+===============================================================================
